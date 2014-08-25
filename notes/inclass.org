@@ -1,0 +1,54 @@
+[2014-08-25 Mon]
+* Notes
+** What is an algorithm?
+*** From wikipedia:
+    In mathematics and computer science, an algorithm is a
+    step-by-step procedure for calculations. 
+*** From the textbook:
+    Informally, an algorithm is a well-defined computational procedure
+    that takes some values as  input and produces some values as
+    output. An algorithm is thus a sequence of computational steps
+    that transform the input into the output. 
+
+
+
+
+
+
+** Why study algorithms?
+*** Because that's what we do when we program?
+** Problem 1)
+*** Input: an array A[1..n] of n numbers
+*** Goal:
+**** Find the smallest number:
+| Algorithm          | Big O                  |
+|--------------------+------------------------|
+| Scan the list      | O(n)                   |
+| Sort first         | O(n log(n))            |
+| Binary Search tree | O(n log(n)) (to build) |
+| Heap               | O(n) (to build)        |
+***** Example algorithm:
+min = A[i]
+for i = 2:n
+  if A[i] < min
+    min = A[i]
+****** Linear is best
+**** Find the smallest and largest number:
+***** Same as above: for-loop w/ ifs:
+min = A[i]
+max = A[i]
+for i = 2:n
+  if A[i] < min
+    min = A[i]
+  elseif A[i] > max
+    max = A[i]
+****** This has 2n comparisons worst case.
+***** Try another:
+Break it into pairs
+Do a comparison between those, finding largest and smallest of pair. 
+Compare largest to max and smallest to min
+****** This is 3n/2 comparisons.
+**** Find the largest and second largest
+***** There exists nan algorithm that is 1.5n comparisons.
+***** Find it for "homework"
+
