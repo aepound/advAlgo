@@ -1,5 +1,5 @@
-[2014-08-25 Mon]
-* Notes
+
+* Notes [2014-08-25 Mon]
 ** What is an algorithm?
 *** From wikipedia:
     In mathematics and computer science, an algorithm is a
@@ -49,6 +49,66 @@ Do a comparison between those, finding largest and smallest of pair.
 Compare largest to max and smallest to min
 ****** This is 3n/2 comparisons.
 **** Find the largest and second largest
-***** There exists nan algorithm that is 1.5n comparisons.
-***** Find it for "homework"
+***** There exists nan algorithm that is <1.5n comparisons.
+***** Find it for "homework" 
 
+* Notes [2014-08-27 Wed]
+** Find the largest and second largest
+*** There exists an algorithm that is <1.5n comparisons.
+      Pair the number and compare to find the greatest.
+      Then continue to compare pairs of the "winners"
+      Then keep doing this, until that largest is found
+      Then look through the set that were "defeated" by the largest. 
+
+Visualization: Competition tree:
+
+45 10 21 5 32 4 8 12
+ \ /  \  /  \ / \ /
+ 45    21   32   12
+  \    /     \   /
+    45        32
+       \     /
+         45 = winner\champion
+Then find the second largest: 
+Look at the numbers defeated by winner: (Only log(n) number to
+ compare) 
+10 21 32
+ \ /  /
+  21 32
+   \ /
+    32 = 2nd largest
+*** Number of comparisons: n + log(n)
+** Syllabus
+*** Things to know:
+**** Binary Search Trees, AVL trees, hash tables.
+**** sorting algorithms, basic graph algorithms
+***** Breadth first search, Depth first search
+** Course overview
+*** Growth of functions
+**** asymptotic notations
+***** time/space complexity
+**** Solving recurrences
+***** substitution, recursion tree, master theorem
+**** Amortized analysis
+*** Algorithm Design
+**** Focus on learning techniques not algorithms themselves
+**** Algorithms taught will only show how, not the what..
+**** Ex: divide and conquer, prune and search
+*** Designing data strutures
+**** Augmenting bst
+*** Dynamic Programming
+**** kanpsack
+**** longest common subsequence
+*** Graph algorithms
+**** BFS, DFS
+**** shortest paths
+*** Computational geometry
+*** Computational Complexity
+**** P, NP, NP-hard and NP-Complete
+***** definitions
+***** how to prove a problem is NP-complete: Problem reduction
+** Grading
+*** 50% homework
+*** 20% mid term (Oct 15)
+*** 30% Final (7:30-9:20 am, Dec 8)
+** 
