@@ -1,0 +1,194 @@
+\documentclass{article}
+\input{commonheader}
+\usepackage{comment}
+\usepackage{enumitem}
+
+\title{CS 5050: Homework 1}             
+\author{Andrew Pound}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{}
+With Chad Cummings.
+\begin{enumerate}[label=(\alph*)]
+\item  Suppose we are comparing implementations of insertion sort and 
+merge sort on the same machine. For inputs of size n, insertion sort
+runs in $8n^2$ steps, while merge sort runs in $64n \log n$ steps. For
+which values of $n$ does insertion sort beats merge sort? {\bf (5
+  points)} 
+\item[]
+There are a few different ways to do this. The first way that we
+attacked it was that we solved the inequality equation to easiest way
+to solve this is to tabulate the answers for each side of the equatoin
+and find the point that they cross.  (This would actually get a bit
+long for this particular problem).  So instead a plot of the two
+functions can be used to see where it crosses.
+
+Equations:
+\begin{equation}\label{eq:1a}
+  \begin{split}
+    8n^2 &\le 64n\log n\\
+    \frac{1}{8} &\le  \frac{1}{n}\log n\\
+    2^{\frac{1}{8}} &\le n^{\frac{1}{n}}
+  \end{split}
+\end{equation}
+
+Plotting both sides of this, produces the graph below.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.7\linewidth]{prob1a}
+  \caption{Plot of the inequality in equation \ref{eq:1a}.}
+  \label{fig:prob1a}
+\end{figure}
+
+From this we can see that the cross over point is around 43.
+Tabulating the values of $n^{1/n}$ in Table \ref{tab:1a}, the
+neighborhood of 43 and 
+\begin{table}[h!]
+  \centering
+  \caption{Tabulation of values around $n=43$.}
+  \label{tab:1a}
+  \begin{tabular}{cc}
+    $n$ & $n^{1/n}$ \\
+    \input{prob1a.tex}
+  \end{tabular}
+\end{table}
+comparing them with the value of $2^{1/8} = 1.0905$, we can see that
+any number greater than 43 satisfies the inequality.  
+
+
+\item  What is the smallest value of n such that an algorithm whose
+running time is $100n^2$ runs faster than an algorithm whose running
+time is $2^n$ on the same machine? {\bf (5 points) }
+\item[] This can be solved in much the same manner as the previous
+  problem. First, Let's examine the inequality.
+  \begin{equation}\label{eq:1b}
+    \begin{split}
+      100 n^2 & \le 2^n\\
+      \log_2(100n^2) & \le log_2(2^n) = n\\
+      \frac{2}{n} \log(10n) &\le 1\\
+      \frac{1}{n} \log(10n) &\le \frac1 2\\
+      \log\left(n^{\frac{1}{n}}\right) &\le \frac{1}{2}\\
+      \left(10n\right)^{\frac{1}{n}} &\le \sqrt{2}
+    \end{split}
+  \end{equation}
+\end{enumerate} 
+
+The plot of this function is seen in Figure \ref{fig:1b}, and the
+tabulation around the cross over is in Table \ref{tab:1b}.  This time
+we ar comparing with the value $\sqrt{2} = 1.4142$, and we can see
+that the cross over happens at $n=15$.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.7\linewidth]{prob1b}
+  \caption{Plot of the inequality in equation \ref{eq:1b}.}
+  \label{fig:1b}
+\end{figure}
+
+\begin{table}[h!]
+  \centering
+  \caption{Tabulation of values around $n=15$.}
+  \label{tab:1b}
+  \begin{tabular}[h]{cc}
+    $n$ & $(10n)^{1/n}$ \\
+    \input{prob1b.tex}
+  \end{tabular}
+\end{table}
+
+
+\section{}
+We have discussed the insertion sort algorithm in class and we showed
+that in the worst case the algorithm runs in $\Theta(n^2)$ time. You
+may wonder whether the algorithm can run asymptotically faster for
+certain ``average'' cases. In this exercise, we will examine the running
+time of the insertion sort algorithm on some average cases. Let $A$ be 
+the input array of n elements.
+\begin{enumerate}[label=(\alph*)]
+\item Consider the case where the first $n/2$ elements of $A$ have
+already been sorted \emph{increasingly} and the last $n/2$ elements
+have been sorted \emph{decreasingly}. For example, $A = \{1, 3, 5, 7,
+8, 6, 4, 2\}$. Suppose we want to sort all elements of $A$ in
+increasing order by using the insertion sort algorithm. What would be
+the running time of the algorithm? What if the first $n/2$ elements of
+$A$ have already been sorted decreasingly and the last $n/2$ elements
+have been sorted increasingly? For example, $A = \{8, 6, 4, 2, 1, 3,
+5, 7\}$. What would be the running time in this case? {\bf (10 points)}
+
+\item Consider the case where the elements of $A$ with odd indices have
+already been sorted increasingly and elements with even indices have
+been sorted decreasingly (we assume the index of $A$ starts from
+1). For example, $A = \{1, 8, 2, 7, 3, 6, 4, 5\}$. Suppose we want to
+sort all elements of $A$ in increasing order by using the insertion
+sort algorithm. What would be the running time of the algorithm?
+
+What if the elements of $A$ with odd indices have already been sorted
+\emph{decreasingly} and elements with even indices have been sorted 
+\emph{increasingly}. For example, $A = \{8, 1, 7, 2, 6, 3, 5,
+4\}$. What would be the running time in this case?  {\bf (10 points)}
+\end{enumerate}
+
+Note: For each of the questions, please give your answers in the
+big-Theta notation and also briefly explain how you obtain your answer.
+
+\section{}
+For each of the following pairs of functions, indicate whether it is
+one of the three cases: $f (n) = O(g(n))$, $f (n) = \Omega(g(n))$, or
+$f (n) = \Theta(g(n))$. (30 points)
+\begin{enumerate}[label=(\alph*)]
+\item $f (n) = 100n + \log n$ and $g(n) = 6n + \log^2 n$.
+\item $f (n) = 20 \log n + 4$ and $g(n) = \log n^2 - 100$.
+\item $f (n) =\frac{n^2}{\log n}$ and $g(n) = n \log^2 n$.
+\item $f (n) =\sqrt{n}$ and $g(n) = \log^5 n$.
+\item $f (n) = n2^n$ and $g(n) = 3^n$ .
+\item $f (n) = 4n \log n$ and $g(n) = n \log_33 n$.
+\end{enumerate}
+
+
+Note: For each question, you only need to give your answer and the
+proof is not required. 
+
+
+\section{}
+The \emph{knapsack problem} is defined as follows: Given as input a
+knapsack of size $K$ and $n$ items whose sizes are $k_1 , k_2 ,
+. . . , kn$ , where $K$ and $k_1 , k_2 , . . . , k_n$ are all real
+numbers, find a full ``packing'' of the knapsack (i.e., choose a
+subset of the n items such that the total sum of the sizes of the
+items in the chosen subset is exactly $K$). 
+
+It is well known that the knapsack problem is NP-complete, which
+implies that it is very likely that efficient algorithms (i.e., those
+with a polynomial running time) for this problem do not exist. Thus,
+people tend to look for good {\bf approximation algorithms} for
+solving this problem. In this exercise, we relax the constraint of the
+knapsack problem as follows. We still seek a packing of the knapsack,
+but we need not look for a ``full'' packing of the knapsack; instead,
+we look for a packing of the knapsack (i.e., a subset of the n input
+items) such that the total sum of the sizes of the items in the chosen
+subset is at least $K/2$ (but no more than $K$). This is called a
+\emph{factor of 2 approximation solution} for the knapsack problem. To 
+simplify the problem, we assume that a factor of 2 approximation
+solution for the knapsack problem always exists, i.e, there always
+exists a subset of items whose total size is at least $K/2$ and at
+most $K$. 
+
+Design a polynomial time algorithm for computing a factor of 2
+approximation solution for this problem, and analyze the running time
+of your algorithm (in the big-O notation). If your algorithm runs in
+$O(n)$ time and is correct, then you get {\bf 5 extra points}. {\bf(20
+  points)} 
+
+Note: You are required to clearly describe the main idea of your
+algorithm. Although the pseudo-code is not required, you may also give
+the pseudo-code if you feel it is helpful for you to describe your
+algorithm. (The reason I want to see the algorithm description instead
+of only the code or pseudo-code is that it would be difficult to
+understand another person's code without any explanation.) You also
+need to briefly explain why your algorithm works, i.e., why your
+algorithm can produce a factor of 2 approximation solution. Finally,
+please analyze the running time of your algorithm. 
+
+
+\end{document}
