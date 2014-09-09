@@ -191,4 +191,24 @@ algorithm can produce a factor of 2 approximation solution. Finally,
 please analyze the running time of your algorithm. 
 
 
+
+In order to find a factor of 2 approximation, we will make use of the
+assumptions that there definitely exists such an approximation, and
+that all of the $k_i$ sizes are positive.
+
+The algorithm is as follows:
+
+Iterate through the list by pairs, finding the largest of each pair
+and moving it to the lower position in the pair.
+Then iterate and add the largest of each pair (unless it is too large
+(i.e. makes the knapsack over full).
+Then, if at the end of this loop, that knapsack is not at least 1/2
+full, then iterate through the smaller of the pairs, adding them,
+unless they overfill the knapsack.
+
+Because there exists a factor of 2 approximation, this algorithm will
+terminate when either the solution is found or the entire list is
+added during the 3rd loop, which will then constitute a solution
+(because one has to exist).
+
 \end{document}
