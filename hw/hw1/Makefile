@@ -11,14 +11,14 @@ TABLES=prob1a.tex prob1b.tex
 MATOUT= $(FIGURES) $(PDFFIGS) $(TABLES)
 
 
-PROJECT: hw1.pdf
-		 cp hw1.pdf hw1_Pound.pdf
+PROJECT: $(LTXOUT)
+		 cp $(LTXOUT) hw1_Pound.pdf
 
-LTXOUT: $(MATOUT)
+$(LTXOUT): $(MATOUT)
 		pdflatex hw1.tex
 
 $(MATOUT): $(SCRIPT)
-		 matlab -r "$(basename $(SCRIPT))"
+		 matlab -r "$(basename $(SCRIPT)); exit"
 
 #$(PDFFIGS): $(FIGURES)
 #		 ps2pdf -EPSCrop $(FIGURES)
