@@ -10,8 +10,8 @@
 \begin{document}
 \maketitle
 
+I worked on this assignement with Chad Cummings.
 \section{}
-With Chad Cummings.
 \begin{enumerate}[label=(\alph*)]
 \item  Suppose we are comparing implementations of insertion sort and 
 merge sort on the same machine. For inputs of size n, insertion sort
@@ -36,7 +36,7 @@ Equations:
 \end{equation}
 
 Plotting both sides of this, produces the graph below.
-\begin{figure}[h!]
+\begin{figure}[h!t]
   \centering
   \includegraphics[width=.7\linewidth]{prob1a}
   \caption{Plot of the inequality in equation \ref{eq:1a}.}
@@ -46,7 +46,7 @@ Plotting both sides of this, produces the graph below.
 From this we can see that the cross over point is around 43.
 Tabulating the values of $n^{1/n}$ in Table \ref{tab:1a}, the
 neighborhood of 43 and 
-\begin{table}[h!]
+\begin{table}[h!t]
   \centering
   \caption{Tabulation of values around $n=43$.}
   \label{tab:1a}
@@ -80,14 +80,14 @@ The plot of this function is seen in Figure \ref{fig:1b}, and the
 tabulation around the cross over is in Table \ref{tab:1b}.  This time
 we ar comparing with the value $\sqrt{2} = 1.4142$, and we can see
 that the cross over happens at $n=15$.
-\begin{figure}[h!]
+\begin{figure}[h!t]
   \centering
   \includegraphics[width=.7\linewidth]{prob1b}
   \caption{Plot of the inequality in equation \ref{eq:1b}.}
   \label{fig:1b}
 \end{figure}
 
-\begin{table}[h!]
+\begin{table}[h!t]
   \centering
   \caption{Tabulation of values around $n=15$.}
   \label{tab:1b}
@@ -97,7 +97,7 @@ that the cross over happens at $n=15$.
   \end{tabular}
 \end{table}
 
-
+\vspace{3em}
 \section{}
 We have discussed the insertion sort algorithm in class and we showed
 that in the worst case the algorithm runs in $\Theta(n^2)$ time. You
@@ -115,6 +115,7 @@ the running time of the algorithm? What if the first $n/2$ elements of
 $A$ have already been sorted decreasingly and the last $n/2$ elements
 have been sorted increasingly? For example, $A = \{8, 6, 4, 2, 1, 3,
 5, 7\}$. What would be the running time in this case? {\bf (10 points)}
+\item[] 
 
 \item Consider the case where the elements of $A$ with odd indices have
 already been sorted increasingly and elements with even indices have
@@ -138,11 +139,79 @@ one of the three cases: $f (n) = O(g(n))$, $f (n) = \Omega(g(n))$, or
 $f (n) = \Theta(g(n))$. (30 points)
 \begin{enumerate}[label=(\alph*)]
 \item $f (n) = 100n + \log n$ and $g(n) = 6n + \log^2 n$.
+\item[] $f(n) = \Omega(g(n))$.  My reasoning is this:
+  \begin{equation}
+    \begin{split}
+      f(n) &\: ?\: g(n)\\
+      100n + \log n &\: ? \: 6n+]log^2 n\\
+      94n &\: ?\: \log^2 n - \log n 
+    \end{split}
+  \end{equation}
+Now, $\log^2 n - \log n < \log^2 n$, and comparing this as above, we
+see that 
+\begin{equation}
+  \begin{split}
+    94n > \log^2 n > \log^2 n -\log n.
+  \end{split}
+\end{equation}
+Thus, we can say that $f(n) = \Omega(g(n))$.
 \item $f (n) = 20 \log n + 4$ and $g(n) = \log n^2 - 100$.
+\item[] $f(n) = \Theta(g(n))$.  Playing with the equations a bit, we
+  can see
+  \begin{equation}
+    \begin{split}
+      f(n) & \: ? \: g(n)\\
+      20\log n + 4 &\: ? \: \log n^2 - 100\\
+      20 \log n + 4 &\: ? \: 2\log n - 100.
+    \end{split}
+  \end{equation}
+Now, if we choose $c_1 = 20$ and $c_2 = 10$, then we get an asymptotic
+upper and lower bound, respectively, by forming the equations $c_i
+g(n)$.  Thus, we know that $f(n) = \Theta(g(n))$.
 \item $f (n) =\frac{n^2}{\log n}$ and $g(n) = n \log^2 n$.
+\item[] $f(n) = \Omega(g(n))$. Let's play with the equations:
+  \begin{equation}
+    \begin{split}
+      \frac{n^2}{\log n} &\: ? \: n \log^2 n\\
+      n &\: ? \: \log^3 n.
+    \end{split}
+  \end{equation}
+Then using a nifty formula:
+  \begin{equation}
+    \log^k n = O(n^d) \quad \forall\: k>0, \: d > 0,
+  \end{equation}
+we can see that $d = 1$, and $k = 3$, and thus, $g(n) = O(f(n))$. 
+Or in other words, $f(n) = \Omega(g(n))$.
 \item $f (n) =\sqrt{n}$ and $g(n) = \log^5 n$.
+\item[] $f(n) = \Omega(f(n))$. Using the same nifty equation from
+  above, we can see that $g(n) = O(f(n))$, as $k = 5$, and $d = 1/2$.
+  Thus flipping this around, we see that $f(n) = \Omega(f(n))$.
 \item $f (n) = n2^n$ and $g(n) = 3^n$ .
-\item $f (n) = 4n \log n$ and $g(n) = n \log_33 n$.
+\item[] $f(n) = O(g(n))$.  We will make use of our other nifty
+  formula 
+  \begin{equation}
+    n^d = o(e^n), \quad \forall\: e > 1.
+  \end{equation}
+First, let's play a bit with our equation
+\begin{equation}
+\begin{split}
+  n2^n &\: ?\: 3^n\\
+  n &\: ? \:  \left(\frac{3}{2}\right)^n.
+\end{split}
+\end{equation}
+This helps us to see that when $d = 1$ and $ e = 3/2$, then 
+we know that $f(n) = o(g(n))$ and therfore, $f(n) = O(g(n))$.
+\item $f (n) = 4n \log n$ and $g(n) = n \log_3 n$.
+\item[] $f(n) = \Theta(g(n))$. Playing with the equation, we get
+  \begin{equation}
+    \begin{split}
+    4n \log n &\: ? \: n \log_3 n\\
+    4 \log n &\: ? \: \frac{\log n}{\log 3}\\
+    4 \log n &\: ? \: \frac{1}{\log 3} \log n\\
+    4 &\: ? \: \frac{1}{\log 3}
+    \end{split}
+  \end{equation}
+Now we see that $f(n) = \Theta(g(n))$.
 \end{enumerate}
 
 
@@ -153,7 +222,7 @@ proof is not required.
 \section{}
 The \emph{knapsack problem} is defined as follows: Given as input a
 knapsack of size $K$ and $n$ items whose sizes are $k_1 , k_2 ,
-. . . , kn$ , where $K$ and $k_1 , k_2 , . . . , k_n$ are all real
+\dots , kn$ , where $K$ and $k_1 , k_2 , \dots , k_n$ are all real
 numbers, find a full ``packing'' of the knapsack (i.e., choose a
 subset of the n items such that the total sum of the sizes of the
 items in the chosen subset is exactly $K$). 
@@ -189,6 +258,10 @@ understand another person's code without any explanation.) You also
 need to briefly explain why your algorithm works, i.e., why your
 algorithm can produce a factor of 2 approximation solution. Finally,
 please analyze the running time of your algorithm. 
+
+\paragraph{My algorithm}
+
+
 
 
 
