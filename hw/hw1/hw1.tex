@@ -2,6 +2,7 @@
 \input{commonheader}
 \usepackage{comment}
 \usepackage{enumitem}
+\usepackage{algpseudocode}
 
 \title{CS 5050: Homework 1}             
 \author{Andrew Pound}
@@ -105,6 +106,10 @@ may wonder whether the algorithm can run asymptotically faster for
 certain ``average'' cases. In this exercise, we will examine the running
 time of the insertion sort algorithm on some average cases. Let $A$ be 
 the input array of n elements.
+
+Note: For each of the questions, please give your answers in the
+big-Theta notation and also briefly explain how you obtain your answer.
+
 \begin{enumerate}[label=(\alph*)]
 \item Consider the case where the first $n/2$ elements of $A$ have
 already been sorted \emph{increasingly} and the last $n/2$ elements
@@ -115,7 +120,60 @@ the running time of the algorithm? What if the first $n/2$ elements of
 $A$ have already been sorted decreasingly and the last $n/2$ elements
 have been sorted increasingly? For example, $A = \{8, 6, 4, 2, 1, 3,
 5, 7\}$. What would be the running time in this case? {\bf (10 points)}
-\item[] 
+
+\item[] The insertion sort algorithm that we discussed in class is
+  given as
+  \begin{algorithmic}
+    \For{$i=2\dots n$}
+    \State $x\gets A[i]$
+    \State $j \gets i-1$
+    \While{$A[j-1] < x \And j \ge 1$}
+    \State $A[j+1]\gets A[j]$
+    \State $j \gets j-1$
+    \EndWhile
+    \State $A[j+1]\gets x$
+    \EndFor
+  \end{algorithmic}
+The outer for loop consists of $4c$ operations, and the inner loop
+(when run) consists of $2c$ operations.
+Now suppose that  the elements of our array are ordered in such a  way
+that the first half of the array are already in ascending order, and
+the second half is the worst case (descending order) and need to be
+merged into the first half.  If that is the case, then the first half
+of the algorithm is a best case scenario, and only uses
+$4c\frac{n}{2}$ operations.  The second half, though will utilize the
+inner for-loop to move some of the elements in the first half of the
+array in order to insert in the correct place. 
+By considering the first elements in the second half, we can determine
+a relation between the number of times in the inner loop and the
+iteration index.  If the array is in the form specified, then the
+first element of the second half will not require any moving to place
+it.  The second will require 2 moves (the first element of the 2nd
+half and the last element of the first half).  The third element in
+the 2nd half will require 4 moves.  We see that for $i > \frac{n}{2}$,
+the number of times in the inner loop will be $2(i-\frac{n}{2})$.
+Thus, we can stick this into an expression for the total number of
+operations
+\begin{equation}
+  \underbrace{4cn}_{\text{outer loop}} + \underbrace{\sum_{i =
+    \frac{n}{2}}^n2\left(i-\frac{n}{2}\right)\left(2c\right).
+}_{\text{inner loop}} 
+\end{equation}
+Now expanding this, we get a total of 
+\begin{equation}
+\begin{split}
+  (4cn) + 4c\sum_{i=0}^{n/2}i &= 4cn +
+  4c\frac{\frac{n}{2}\left(\frac{n}{2} + 1\right)}{2}\\
+  &= 4cn + 2c\left(\frac{1}{4}n^2 + \frac{1}{2}n\right)\\
+  &= 4cn + \frac{1}{2}n^2c + cn\\
+  &= \frac{1}{2}cn^2 + 5cn
+  &= O(n^2}
+\end{split}
+\end{equation}
+
+%The second ordering 
+
+
 
 \item Consider the case where the elements of $A$ with odd indices have
 already been sorted increasingly and elements with even indices have
@@ -128,14 +186,86 @@ What if the elements of $A$ with odd indices have already been sorted
 \emph{decreasingly} and elements with even indices have been sorted 
 \emph{increasingly}. For example, $A = \{8, 1, 7, 2, 6, 3, 5,
 4\}$. What would be the running time in this case?  {\bf (10 points)}
+
+\item[] 
+Ok, we'll begin by looking at how the algorithm works on the example
+sequence.  The results of the steps of the algorithm are shown below.
+The bolded numbers identify values that needed to be moved (i.e. the
+values for which the inner loop was used). The first line is the
+original sequence.
+\begin{equation}
+  \begin{matrix}
+    1 & 8 & 2 & 7& 3  &6 & 4 & 5\\
+    1 &&&&&&&\\
+    1 & 8 &&&&&&\\
+    1 & 2 & {\bf 8}&&&&&\\ 
+    1 & 2 & 7 & {\bf 8}&&&&\\
+    1 & 2 & 3 & {\bf 7}&{\bf 8}  &&&\\
+    1 & 2 & 3 & 6& {\bf 7}&{\bf 8}  &&\\
+    1 & 2 & 3 & 4& {\bf 6}& {\bf 7}&{\bf 8}  &\\
+    1 & 2 & 3 & 4& 5  &{\bf 6} & {\bf 7}&{\bf 8} \\
+  \end{matrix}
+\end{equation}
+From this we can see that for each pair of iterations, the number of
+moves ends up being predictable.  In order to count the time, we then
+start with the equation
+\begin{equation}
+  \underbrace{4cn}_{\text{outer loop}} + \underbrace{2 \sum_{i=1}^{n/2}
+    (i-1)(2c)}_{\text{inner loop}}.
+\end{equation}
+The outer loop has $4c$ operations and happens for each element in the
+array, thus we get $4cn$.   Each pair of iterations is hitting the
+inner loop for the same number of times, namely $i-1$, for the $i$th
+pair. The inner loop consists of $2c$ operations, thus we get the
+summation over all the pairs, and multiply by 2 to get the full effect
+of the inner loop.  This is
+\begin{equation}
+  \begin{split}
+    2 \sum_{i=1}^{n/2}
+    (i-1)(2c) &= 4c \sum_{i=1}^{n/2}(i - 1)\\
+    &= 4c \sum_{i=1}^{n/2}i  - 4c\frac{n}{2}\\
+    &= 4c \frac{\frac{n}{2}\left(\frac{n}{2} + 1\right)}{2} -
+    4c\frac{n}{2}\\ 
+    &= 2c\left(\frac{n^2}{4} + \frac{n}{2} - n\right)\\
+    &= 2c\left(\frac{1}{4}n^2 - \frac{1}{2}n\right)
+  \end{split}
+\end{equation}
+The entire operations count together then would be
+\begin{equation}
+  \begin{split}
+    4cn + 2c\left(\frac{1}{4}n^2 - \frac{1}{2}n\right)&= 
+    4cn + \frac{1}{2}cn^2 - cn\\
+    &= \frac{1}{2}cn^2 + 3cn
+    &= O(n^2}
+  \end{split}
+\end{equation}
+Now for the other example, let's see what it looks like:
+\begin{equation}
+  \begin{matrix}
+    8& 1& 7& 2& 6& 3& 5 &4 \\
+    8 &&&&&&&\\
+    1 & {\bf 8} &&&&&&\\
+    1 & 7 & {\bf 8}&&&&&\\ 
+    1 & 2 & {\bf 7} & {\bf 8}&&&&\\
+    1 & 2 & 6 & {\bf 7}&{\bf 8}  &&&\\
+    1 & 2 & 3 & {\bf 6}& {\bf 7}&{\bf 8}  &&\\
+    1 & 2 & 3 & 5& {\bf 6}& {\bf 7}&{\bf 8}  &\\
+    1 & 2 & 3 & 4& {\bf 5}  &{\bf 6} & {\bf 7}&{\bf 8} \\
+  \end{matrix}
+\end{equation}
+Essentially, the idea is the same, in that the iterations can be split
+into pairs such that a pair will use the inner loop (to move larger
+numbers) the same number of times.  Thus the analysis is (almost)
+exactly the same: $ O(n^2}$.
+
+
 \end{enumerate}
 
-Note: For each of the questions, please give your answers in the
-big-Theta notation and also briefly explain how you obtain your answer.
 
 \section{}
 For each of the following pairs of functions, indicate whether it is
 one of the three cases: $f (n) = O(g(n))$, $f (n) = \Omega(g(n))$, or
+
 $f (n) = \Theta(g(n))$. (30 points)
 \begin{enumerate}[label=(\alph*)]
 \item $f (n) = 100n + \log n$ and $g(n) = 6n + \log^2 n$.
