@@ -4,447 +4,74 @@
 \usepackage{enumitem}
 \usepackage{algpseudocode}
 
-\title{CS 5050: Homework 1}             
+\title{CS 5050: Homework 2}      
 \author{Andrew Pound}
 \date{\today}
 
 \begin{document}
 \maketitle
 
-I worked on this assignement with Chad Cummings.
+%\begin{enumerate}[label=(\alph*)]
+I worked on this assignment with Chad Cummings.
 \section{}
-\begin{enumerate}[label=(\alph*)]
-\item  Suppose we are comparing implementations of insertion sort and 
-merge sort on the same machine. For inputs of size n, insertion sort
-runs in $8n^2$ steps, while merge sort runs in $64n \log n$ steps. For
-which values of $n$ does insertion sort beats merge sort? {\bf (5
-  points)} 
-\item[]
-There are a few different ways to do this. The first way that we
-attacked it was that we solved the inequality equation to easiest way
-to solve this is to tabulate the answers for each side of the equatoin
-and find the point that they cross.  (This would actually get a bit
-long for this particular problem).  So instead a plot of the two
-functions can be used to see where it crosses.
-
-Equations:
-\begin{equation}\label{eq:1a}
-  \begin{split}
-    8n^2 &\le 64n\log n\\
-    \frac{1}{8} &\le  \frac{1}{n}\log n\\
-    2^{\frac{1}{8}} &\le n^{\frac{1}{n}}
-  \end{split}
-\end{equation}
-
-Plotting both sides of this, produces the graph below.
-\begin{figure}[h!t]
-  \centering
-  \includegraphics[width=.7\linewidth]{prob1a}
-  \caption{Plot of the inequality in equation \ref{eq:1a}.}
-  \label{fig:prob1a}
-\end{figure}
-
-From this we can see that the cross over point is around 43.
-Tabulating the values of $n^{1/n}$ in Table \ref{tab:1a}, the
-neighborhood of 43 and 
-\begin{table}[h!t]
-  \centering
-  \caption{Tabulation of values around $n=43$.}
-  \label{tab:1a}
-  \begin{tabular}{cc}
-    $n$ & $n^{1/n}$ \\
-    \input{prob1a.tex}
-  \end{tabular}
-\end{table}
-comparing them with the value of $2^{1/8} = 1.0905$, we can see that
-any number greater than 43 satisfies the inequality.  
-
-
-\item  What is the smallest value of n such that an algorithm whose
-running time is $100n^2$ runs faster than an algorithm whose running
-time is $2^n$ on the same machine? {\bf (5 points) }
-\item[] This can be solved in much the same manner as the previous
-  problem. First, Let's examine the inequality.
-  \begin{equation}\label{eq:1b}
-    \begin{split}
-      100 n^2 & \le 2^n\\
-      \log_2(100n^2) & \le log_2(2^n) = n\\
-      \frac{2}{n} \log(10n) &\le 1\\
-      \frac{1}{n} \log(10n) &\le \frac1 2\\
-      \log\left(n^{\frac{1}{n}}\right) &\le \frac{1}{2}\\
-      \left(10n\right)^{\frac{1}{n}} &\le \sqrt{2}
-    \end{split}
-  \end{equation}
-\end{enumerate} 
-
-The plot of this function is seen in Figure \ref{fig:1b}, and the
-tabulation around the cross over is in Table \ref{tab:1b}.  This time
-we ar comparing with the value $\sqrt{2} = 1.4142$, and we can see
-that the cross over happens at $n=15$.
-\begin{figure}[h!t]
-  \centering
-  \includegraphics[width=.7\linewidth]{prob1b}
-  \caption{Plot of the inequality in equation \ref{eq:1b}.}
-  \label{fig:1b}
-\end{figure}
-
-\begin{table}[h!t]
-  \centering
-  \caption{Tabulation of values around $n=15$.}
-  \label{tab:1b}
-  \begin{tabular}[h]{cc}
-    $n$ & $(10n)^{1/n}$ \\
-    \input{prob1b.tex}
-  \end{tabular}
-\end{table}
-
-\vspace{3em}
-\section{}
-We have discussed the insertion sort algorithm in class and we showed
-that in the worst case the algorithm runs in $\Theta(n^2)$ time. You
-may wonder whether the algorithm can run asymptotically faster for
-certain ``average'' cases. In this exercise, we will examine the running
-time of the insertion sort algorithm on some average cases. Let $A$ be 
-the input array of n elements.
-
-Note: For each of the questions, please give your answers in the
-big-Theta notation and also briefly explain how you obtain your answer.
-
-\begin{enumerate}[label=(\alph*)]
-\item Consider the case where the first $n/2$ elements of $A$ have
-already been sorted \emph{increasingly} and the last $n/2$ elements
-have been sorted \emph{decreasingly}. For example, $A = \{1, 3, 5, 7,
-8, 6, 4, 2\}$. Suppose we want to sort all elements of $A$ in
-increasing order by using the insertion sort algorithm. What would be
-the running time of the algorithm? What if the first $n/2$ elements of
-$A$ have already been sorted decreasingly and the last $n/2$ elements
-have been sorted increasingly? For example, $A = \{8, 6, 4, 2, 1, 3,
-5, 7\}$. What would be the running time in this case? {\bf (10 points)}
-
-\item[] The insertion sort algorithm that we discussed in class is
-  given as
-  \begin{algorithmic}
-    \For{$i=2\dots n$}
-    \State $x\gets A[i]$
-    \State $j \gets i-1$
-    \While{$A[j-1] < x \And j \ge 1$}
-    \State $A[j+1]\gets A[j]$
-    \State $j \gets j-1$
-    \EndWhile
-    \State $A[j+1]\gets x$
-    \EndFor
-  \end{algorithmic}
-The outer for loop consists of $4c$ operations, and the inner loop
-(when run) consists of $2c$ operations.
-Now suppose that  the elements of our array are ordered in such a  way
-that the first half of the array are already in ascending order, and
-the second half is the worst case (descending order) and need to be
-merged into the first half.  If that is the case, then the first half
-of the algorithm is a best case scenario, and only uses
-$4c\frac{n}{2}$ operations.  The second half, though will utilize the
-inner for-loop to move some of the elements in the first half of the
-array in order to insert in the correct place. 
-By considering the first elements in the second half, we can determine
-a relation between the number of times in the inner loop and the
-iteration index.  If the array is in the form specified, then the
-first element of the second half will not require any moving to place
-it.  The second will require 2 moves (the first element of the 2nd
-half and the last element of the first half).  The third element in
-the 2nd half will require 4 moves.  We see that for $i > \frac{n}{2}$,
-the number of times in the inner loop will be $2(i-\frac{n}{2})$.
-Thus, we can stick this into an expression for the total number of
-operations
-\begin{equation}
-  \underbrace{4cn}_{\text{outer loop}} + \underbrace{\sum_{i =
-    \frac{n}{2}}^n2\left(i-\frac{n}{2}\right)\left(2c\right).
-}_{\text{inner loop}} 
-\end{equation}
-Now expanding this, we get a total of 
-\begin{equation}
-\begin{split}
-  (4cn) + 4c\sum_{i=0}^{n/2}i &= 4cn +
-  4c\frac{\frac{n}{2}\left(\frac{n}{2} + 1\right)}{2}\\
-  &= 4cn + 2c\left(\frac{1}{4}n^2 + \frac{1}{2}n\right)\\
-  &= 4cn + \frac{1}{2}n^2c + cn\\
-  &= \frac{1}{2}cn^2 + 5cn\\
-  &= O(n^2)
-\end{split}
-\end{equation}
-
-%The second ordering 
+ Suppose we want to use insertion sort to sort the numbers in array
+ $A[ 1\cdots n ]$. We can express insertion sort as a recursive
+ procedure as follows. In order to sort $ A[1\cdots n]$, we
+ recursively sort $A[1\cdots n-1]$ and then insert $A[n]$ into the
+ sorted array $A[1\cdots n-1]$. Write a  recurrence for the worst-case
+ running time of this recursive version of insertion sort, and solve
+ the recurrence. 
 
 
 
-\item Consider the case where the elements of $A$ with odd indices have
-already been sorted increasingly and elements with even indices have
-been sorted decreasingly (we assume the index of $A$ starts from
-1). For example, $A = \{1, 8, 2, 7, 3, 6, 4, 5\}$. Suppose we want to
-sort all elements of $A$ in increasing order by using the insertion
-sort algorithm. What would be the running time of the algorithm?
-
-What if the elements of $A$ with odd indices have already been sorted
-\emph{decreasingly} and elements with even indices have been sorted 
-\emph{increasingly}. For example, $A = \{8, 1, 7, 2, 6, 3, 5,
-4\}$. What would be the running time in this case?  {\bf (10 points)}
-
-\item[] 
-Ok, we'll begin by looking at how the algorithm works on the example
-sequence.  The results of the steps of the algorithm are shown below.
-The bolded numbers identify values that needed to be moved (i.e. the
-values for which the inner loop was used). The first line is the
-original sequence.
-\begin{equation}
-  \begin{matrix}
-    1 & 8 & 2 & 7& 3  &6 & 4 & 5\\
-    1 &&&&&&&\\
-    1 & 8 &&&&&&\\
-    1 & 2 & {\bf 8}&&&&&\\ 
-    1 & 2 & 7 & {\bf 8}&&&&\\
-    1 & 2 & 3 & {\bf 7}&{\bf 8}  &&&\\
-    1 & 2 & 3 & 6& {\bf 7}&{\bf 8}  &&\\
-    1 & 2 & 3 & 4& {\bf 6}& {\bf 7}&{\bf 8}  &\\
-    1 & 2 & 3 & 4& 5  &{\bf 6} & {\bf 7}&{\bf 8} \\
-  \end{matrix}
-\end{equation}
-From this we can see that for each pair of iterations, the number of
-moves ends up being predictable.  In order to count the time, we then
-start with the equation
-\begin{equation}
-  \underbrace{4cn}_{\text{outer loop}} + \underbrace{2 \sum_{i=1}^{n/2}
-    (i-1)(2c)}_{\text{inner loop}}.
-\end{equation}
-The outer loop has $4c$ operations and happens for each element in the
-array, thus we get $4cn$.   Each pair of iterations is hitting the
-inner loop for the same number of times, namely $i-1$, for the $i$th
-pair. The inner loop consists of $2c$ operations, thus we get the
-summation over all the pairs, and multiply by 2 to get the full effect
-of the inner loop.  This is
-\begin{equation}
-  \begin{split}
-    2 \sum_{i=1}^{n/2}
-    (i-1)(2c) &= 4c \sum_{i=1}^{n/2}(i - 1)\\
-    &= 4c \sum_{i=1}^{n/2}i  - 4c\frac{n}{2}\\
-    &= 4c \frac{\frac{n}{2}\left(\frac{n}{2} + 1\right)}{2} -
-    4c\frac{n}{2}\\ 
-    &= 2c\left(\frac{n^2}{4} + \frac{n}{2} - n\right)\\
-    &= 2c\left(\frac{1}{4}n^2 - \frac{1}{2}n\right)
-  \end{split}
-\end{equation}
-The entire operations count together then would be
-\begin{equation}
-  \begin{split}
-    4cn + 2c\left(\frac{1}{4}n^2 - \frac{1}{2}n\right)&= 
-    4cn + \frac{1}{2}cn^2 - cn\\
-    &= \frac{1}{2}cn^2 + 3cn\\
-    &= O(n^2)
-  \end{split}
-\end{equation}
-Now for the other example, let's see what it looks like:
-\begin{equation}
-  \begin{matrix}
-    8& 1& 7& 2& 6& 3& 5 &4 \\
-    8 &&&&&&&\\
-    1 & {\bf 8} &&&&&&\\
-    1 & 7 & {\bf 8}&&&&&\\ 
-    1 & 2 & {\bf 7} & {\bf 8}&&&&\\
-    1 & 2 & 6 & {\bf 7}&{\bf 8}  &&&\\
-    1 & 2 & 3 & {\bf 6}& {\bf 7}&{\bf 8}  &&\\
-    1 & 2 & 3 & 5& {\bf 6}& {\bf 7}&{\bf 8}  &\\
-    1 & 2 & 3 & 4& {\bf 5}  &{\bf 6} & {\bf 7}&{\bf 8} \\
-  \end{matrix}
-\end{equation}
-Essentially, the idea is the same, in that the iterations can be split
-into pairs such that a pair will use the inner loop (to move larger
-numbers) the same number of times.  Thus the analysis is (almost)
-exactly the same: $ O(n^2)$.
-
-
-\end{enumerate}
 
 
 \section{}
-For each of the following pairs of functions, indicate whether it is
-one of the three cases: $f (n) = O(g(n))$, $f (n) = \Omega(g(n))$, or
+ Let $A[1\cdots n]$ be an array of $n$ distinct numbers (i.e., no two
+ numbers are equal). If $i < j$ and $A[i] > A[j]$, then the pair
+ $(i,j)$ or $(A[i],A[j])$ is called an inversion of A. 
+ \begin{enumerate}[label=(\alph*)]
+ \item List all inversions of the array $(14,12,17,11,19)$. (5 points)
+ \item What array with elements from the set $\{1,2,...,n\}$ has the
+   most inversions? How many inversions does it have? (5 points) 
+ \item Give a divide-and-conquer algorithm that computes the number of 
+   inversions in array $A$ in $O(n\log n)$ time. (Hint: Modify merge
+   sort.) (20 points) 
+ \end{enumerate}
+Note: 0 points will be given for this problem if your algorithm is not
+based on the divide-and-conquer strategy.
 
-$f (n) = \Theta(g(n))$. (30 points)
-\begin{enumerate}[label=(\alph*)]
-\item $f (n) = 100n + \log n$ and $g(n) = 6n + \log^2 n$.
-\item[] $f(n) = \Omega(g(n))$.  My reasoning is this:
-  \begin{equation}
-    \begin{split}
-      f(n) &\: ?\: g(n)\\
-      100n + \log n &\: ? \: 6n+]log^2 n\\
-      94n &\: ?\: \log^2 n - \log n 
-    \end{split}
-  \end{equation}
-Now, $\log^2 n - \log n < \log^2 n$, and comparing this as above, we
-see that 
-\begin{equation}
-  \begin{split}
-    94n > \log^2 n > \log^2 n -\log n.
-  \end{split}
-\end{equation}
-Thus, we can say that $f(n) = \Omega(g(n))$.
-\item $f (n) = 20 \log n + 4$ and $g(n) = \log n^2 - 100$.
-\item[] $f(n) = \Theta(g(n))$.  Playing with the equations a bit, we
-  can see
-  \begin{equation}
-    \begin{split}
-      f(n) & \: ? \: g(n)\\
-      20\log n + 4 &\: ? \: \log n^2 - 100\\
-      20 \log n + 4 &\: ? \: 2\log n - 100.
-    \end{split}
-  \end{equation}
-Now, if we choose $c_1 = 20$ and $c_2 = 10$, then we get an asymptotic
-upper and lower bound, respectively, by forming the equations $c_i
-g(n)$.  Thus, we know that $f(n) = \Theta(g(n))$.
-\item $f (n) =\frac{n^2}{\log n}$ and $g(n) = n \log^2 n$.
-\item[] $f(n) = \Omega(g(n))$. Let's play with the equations:
-  \begin{equation}
-    \begin{split}
-      \frac{n^2}{\log n} &\: ? \: n \log^2 n\\
-      n &\: ? \: \log^3 n.
-    \end{split}
-  \end{equation}
-Then using a nifty formula:
-  \begin{equation}
-    \log^k n = O(n^d) \quad \forall\: k>0, \: d > 0,
-  \end{equation}
-we can see that $d = 1$, and $k = 3$, and thus, $g(n) = O(f(n))$. 
-Or in other words, $f(n) = \Omega(g(n))$.
-\item $f (n) =\sqrt{n}$ and $g(n) = \log^5 n$.
-\item[] $f(n) = \Omega(f(n))$. Using the same nifty equation from
-  above, we can see that $g(n) = O(f(n))$, as $k = 5$, and $d = 1/2$.
-  Thus flipping this around, we see that $f(n) = \Omega(f(n))$.
-\item $f (n) = n2^n$ and $g(n) = 3^n$ .
-\item[] $f(n) = O(g(n))$.  We will make use of our other nifty
-  formula 
-  \begin{equation}
-    n^d = o(e^n), \quad \forall\: e > 1.
-  \end{equation}
-First, let's play a bit with our equation
-\begin{equation}
-\begin{split}
-  n2^n &\: ?\: 3^n\\
-  n &\: ? \:  \left(\frac{3}{2}\right)^n.
-\end{split}
-\end{equation}
-This helps us to see that when $d = 1$ and $ e = 3/2$, then 
-we know that $f(n) = o(g(n))$ and therfore, $f(n) = O(g(n))$.
-\item $f (n) = 4n \log n$ and $g(n) = n \log_3 n$.
-\item[] $f(n) = \Theta(g(n))$. Playing with the equation, we get
-  \begin{equation}
-    \begin{split}
-    4n \log n &\: ? \: n \log_3 n\\
-    4 \log n &\: ? \: \frac{\log n}{\log 3}\\
-    4 \log n &\: ? \: \frac{1}{\log 3} \log n\\
-    4 &\: ? \: \frac{1}{\log 3}
-    \end{split}
-  \end{equation}
-Now we see that $f(n) = \Theta(g(n))$.
-\end{enumerate}
+\section{}
+ Solve the following recurrences (you may use any of the approaches we
+ discussed in class). Make your bounds as small as possible (in the
+ big-O notation). For each recurrence, $T(n)$ is constant for $n \le
+ 2$.  
 
-
-Note: For each question, you only need to give your answer and the
-proof is not required. 
+ \begin{enumerate}[label=(\alph*)]
+ \item $T(n) = 2\dot T\left(\frac{n}{2}\right) + n^4$.
+ \item[]
+ \item $T(n) = 4\dot T\left(\frac{n}{2}\right) + n$.
+ \item[]
+ \item $T(n) = 2\dot T\left(\frac{n}{2}\right) + n\log n$.
+ \item[]
+ \item $T(n) = T\left(\frac{2}{3}\dot n\right) + n$.
+ \item[]
+ \end{enumerate}
 
 
 \section{}
-The \emph{knapsack problem} is defined as follows: Given as input a
-knapsack of size $K$ and $n$ items whose sizes are $k_1 , k_2 ,
-\dots , kn$ , where $K$ and $k_1 , k_2 , \dots , k_n$ are all real
-numbers, find a full ``packing'' of the knapsack (i.e., choose a
-subset of the n items such that the total sum of the sizes of the
-items in the chosen subset is exactly $K$). 
+ Given $k$ sorted lists $L_1 ,L_2 ,\dots ,L_k$ of $n/k$ numbers each,
+ with $1 \le k \le n$, design a divide-and-conquer algorithm for
+ sorting all $n$ numbers in the $k$ sorted lists. Your algorithm
+ should run in $O(n\log k)$ (not $O(n\log n)$) time. You may assume
+ the numbers in each sorted list $L_i$ , for any $1 \le i \le k$, are
+ sorted in ascending order. (20 points) 
 
-It is well known that the knapsack problem is NP-complete, which
-implies that it is very likely that efficient algorithms (i.e., those
-with a polynomial running time) for this problem do not exist. Thus,
-people tend to look for good {\bf approximation algorithms} for
-solving this problem. In this exercise, we relax the constraint of the
-knapsack problem as follows. We still seek a packing of the knapsack,
-but we need not look for a ``full'' packing of the knapsack; instead,
-we look for a packing of the knapsack (i.e., a subset of the n input
-items) such that the total sum of the sizes of the items in the chosen
-subset is at least $K/2$ (but no more than $K$). This is called a
-\emph{factor of 2 approximation solution} for the knapsack problem. To 
-simplify the problem, we assume that a factor of 2 approximation
-solution for the knapsack problem always exists, i.e, there always
-exists a subset of items whose total size is at least $K/2$ and at
-most $K$. 
-
-Design a polynomial time algorithm for computing a factor of 2
-approximation solution for this problem, and analyze the running time
-of your algorithm (in the big-O notation). If your algorithm runs in
-$O(n)$ time and is correct, then you get {\bf 5 extra points}. {\bf(20
-  points)} 
-
-Note: You are required to clearly describe the main idea of your
-algorithm. Although the pseudo-code is not required, you may also give
-the pseudo-code if you feel it is helpful for you to describe your
-algorithm. (The reason I want to see the algorithm description instead
-of only the code or pseudo-code is that it would be difficult to
-understand another person's code without any explanation.) You also
-need to briefly explain why your algorithm works, i.e., why your
-algorithm can produce a factor of 2 approximation solution. Finally,
-please analyze the running time of your algorithm. 
-
-\paragraph{My algorithm}
+Note: 0 points will be given for this problem if your algorithm is not
+based on the divide-and-conquer strategy. 
 
 
 
 
 
-In order to find a factor of 2 approximation, we will make use of the
-assumptions that there definitely exists such an approximation, and
-that all of the $k_i$ sizes are positive.
-
-The algorithm is as follows:
-
-Iterate through the list by pairs, finding the largest of each pair
-and moving it to the lower position in the pair.
-Then iterate and add the largest of each pair (unless it is too large
-(i.e. makes the knapsack over full).
-Then, if at the end of this loop, that knapsack is not at least 1/2
-full, then iterate through the smaller of the pairs, adding them,
-unless they overfill the knapsack.
-
-Because there exists a factor of 2 approximation, this algorithm will
-terminate when either the solution is found or the entire list is
-added during the 3rd loop, which will then constitute a solution
-(because one has to exist).
-
-Pseudocode for the algorithm can be laid out as 
-{\singlespacing
-\begin{algorithmic}
-  \State $cap \gets$ Knapsack size/capacity
-  \For{$i = 1,3,\dots,n$} 
-  \If{$k[i] \le k[i+1]$}
-  \State Swap($k[i],k[i+1]$)
-  \EndIf
-  \EndFor
-  \State $Sz = 0$
-  \State // Let's fill in the larger sizes first
-  \For{$i = 1,3,\dots,n$}
-  \If{ $Sz + k[i] \le cap$}
-  \State $Sz \gets Sz + k[i]$
-  \EndIf
-  \If{ $Sz \ge \frac{cap}{2}$}
-  \State return
-  \EndIf
-  \EndFor
-  \State // Now, start filling in the smaller sizes
-  \For{$i = 2,4,\dots,n$}
-  \If{ $Sz + k[i] \le cap$}
-  \State $Sz \gets Sz + k[i]$
-  \EndIf
-  \If{ $Sz \ge \frac{cap}{2}$}
-  \State return
-  \EndIf
-  \EndFor
-\end{algorithmic}
-}
-The runtime for this algorithm is $O(\frac{3}{2}n)$, because at the
-most it will utilize all three for-loops which are each over only half
-the length of the array.
 \end{document}
