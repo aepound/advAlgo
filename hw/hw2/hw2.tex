@@ -22,8 +22,32 @@ I worked on this assignment with Chad Cummings.
  running time of this recursive version of insertion sort, and solve
  the recurrence. 
 
-
-
+\paragraph{Answer}
+When we split the insertion sort into the stated recursive algorithm,
+then essentially, we have the following.
+\begin{equation}
+  T(n) = T(n-1) + n-1
+\end{equation}
+This takes into account the recursive part (the $T(n-1)$ term) and
+then a worst case insertion (the $n-1$ term).
+Now to solve this, we can use the recursion tree method.
+\begin{align*}
+  k && \text{\# leaves}& & \text{Tree}&& f(n)\\
+  &&&&T(n)&&\\
+  1&&1&&T(n-1)&&n-1\\
+  2&&1&&T(n-2)&&n-2\\
+  \vdots&&\vdots&&\vdots&&\vdots\\
+  n-1&&1&&T(1)&&1\\
+\end{align*}
+So, adding up the cost of the recursion, we get $O(1)$ from the final
+leaf, and then we get 
+\begin{equation}
+  \sum_{i = 1}^{n-1}i = \frac{1}{2}(n-1)n.
+\end{equation}
+Putting these together we get
+\begin{equation}
+  T(n) = O( n(n-1) ) + O(1) = O(n^2).
+\end{equation}
 
 
 \section{}
@@ -49,13 +73,122 @@ based on the divide-and-conquer strategy.
 
  \begin{enumerate}[label=(\alph*)]
  \item $T(n) = 2\dot T\left(\frac{n}{2}\right) + n^4$.
- \item[]
+ \item[] Answer: $T(n) = \Theta(n^4)$.
+
+   Let's first try the Master Theorem.  We get $a = 2$, and $b = 2$,
+   and thus $ \log_b(a) = 1$. Now, let's consider $f(n) = n^4$.
+   Because $f(n) = \Omega(n^{1-\epsilon})$, then the first branch
+   won't work.  And the second condition doesn't hold either, thus we
+   need to look at the third conditions. Firstly, $f(n) =
+   \Omega(n^{1+\epsilon})$, so we now need to check the second part of
+   this condition.  Does there exist $c < 1$ such that $2f(\frac{n}{2})
+   \le cf(n)$?
+   \begin{equation}
+     \begin{split}
+     2f\left(\frac{n}{2}\right) &\le c f(n)\\
+     2\left(\frac{n}{2}\right)^4 &\le cn^4\\
+     \frac{1}{8} & \le c < 1.
+     \end{split}
+   \end{equation}
+Let $c = \frac{1}{4}$, and the inequality is satisfied, and thus, we
+can say that $T(n) = \Theta(n^4)$.
  \item $T(n) = 4\dot T\left(\frac{n}{2}\right) + n$.
- \item[]
+ \item[] Answer: $T(n) = \Theta(n^2)$.
+
+   Again, let's first try the Master Theorem.  We get $a = 4$, and $b
+   = 2$, and thus $ \log_b(a) = 2$. Now, let's consider $f(n) = n$. 
+   Well, if we let $\epsilon = \frac{1}{2}$, then $f(n) = O(n^{2 -
+     \epsilon}) = O(n^{3/2})$.  Thus by the Master Theorem, we can say
+   that $T(n) = \Theta(n^2)$.
+
  \item $T(n) = 2\dot T\left(\frac{n}{2}\right) + n\log n$.
- \item[]
+ \item[] Answer: $T(n) = O(n\log^2 n)$.
+
+   We will try to attack this one using the guess and verification
+   method. I'm assuming that the complexity of $T(n) = O(n\log^2
+   n)$. So, now we need to find a $c > 0$ such that $T(n) \le cn\log^2
+   n$. We will assume that this holds true fot $n/2$. That is,
+   explicitly, we are assuming that 
+   \begin{equation}
+     T\left(\frac{n}{2}\right) \le c
+     \frac{n}{2}\log^2\left(\frac{n}{2}\right).
+   \end{equation}
+   
+   Now we need to show that 
+   \begin{equation}
+     \begin{split}
+       T(n) = 2T\left(\frac{n}{2}\right) + n\log n \le n\log^2\left(n\right).
+     \end{split}
+   \end{equation}
+   Substituting our assumption into the recurrence relation we obtain
+   \begin{equation}
+     \begin{split}
+       T(n) &=
+       2\left(c\frac{n}{2}\log^2\left(\frac{n}{2}\right)\right) +
+       n\log n\\
+         &= cn\log^2\left(\frac{n}{2}\right) + n\log n
+     \end{split}
+   \end{equation}
+   Ok, let's get to work
+\newcommand{\q}{\overset{?}{\le}}
+   \begin{equation}
+     \begin{split}
+       cn\log^2 \left(\frac{n}{2}\right) +n\log n
+       &= cn\log \left(\frac{n}{2}\right)\log
+       \left(\frac{n}{2}\right) + n\log n\\ 
+       &= cn\left(\log n  - 1\right)
+       \left(\log n - 1\right) + n\log n\\ 
+       &= cn\left(\log^2 n  - 2\log n + 1\right) + n\log n\\  
+       &= cn\log^2 n  - 2cn\log n + cn  + n\log n\\  
+       &= c\left(n\log^2 n - n\log n\right) - c\left(n\log n -n\right)
+       + n\log n
+     \end{split}
+   \end{equation}
+   Ok, Now let's compare with our hypothesis.
+   \begin{equation}
+     \begin{split}
+       c\left(n\log^2 n - n\log n\right) - c\left(n\log n -n\right)
+       + n\log n &\q n\log^2 n\\
+       c\left(n\log^2 n - n\log n\right) - c\left(n\log n -n\right)
+       &\q n\log^2 n - n\log n. \\ 
+     \end{split}
+   \end{equation}
+   Now, if we let $c=1$, then we obtain the following
+   \begin{equation}
+     \begin{split}
+     \left(n\log^2 n - n\log n\right) - \left(n\log n -n\right)
+       & \q n\log^2 n - n\log n \\
+     - \left(n\log n -n\right)
+       & \q 0\\
+       -\left(\log n - 1\right) &\q 0.
+     \end{split}
+   \end{equation}
+   The term $\log n - 1 $ is positive for $n > 1$, and thus $c=1$
+   satisfies the inequality.  By this, we can also say that $T(n) =
+   O(n\log^2 n)$, indeed.
  \item $T(n) = T\left(\frac{2}{3}\dot n\right) + n$.
- \item[]
+ \item[] Answer: $T(n) = \Theta(n)$.
+
+   For this one, We will try to Master Theorem again. 
+   The constants $a$ and $b$ give us $\log_b(a) = \log_{3/2}(1) = 0$.
+   Now, $f(n)$ doesn't satisfy either of the first two conditions, so
+   let's find an $\epsilon > 0$ such that $f(n) = n =
+   \Omega(n^{epsilon})$.  By inspection, and $\epsilon = \frac{1}{2}$
+   works, thus we need to verify the second portion of the condition,
+   that is, we need to find $c<1$ such that 
+   \begin{equation}
+     f\left(\frac{2n}{3}\right) \le cf(n).
+   \end{equation}
+   Thus, we get
+   \begin{equation}
+     \begin{split}
+       \frac{2n}{3} &\le cn\\
+       \frac{2}{3} & \le c < 1.
+     \end{split}
+   \end{equation}
+   Hence we can let $c = \frac{5}{6}$, and the inequality is
+   satisfied, and we can say, by the Master Theorem, that $T(n) =
+   \Theta(n)$. 
  \end{enumerate}
 
 
@@ -63,13 +196,42 @@ based on the divide-and-conquer strategy.
  Given $k$ sorted lists $L_1 ,L_2 ,\dots ,L_k$ of $n/k$ numbers each,
  with $1 \le k \le n$, design a divide-and-conquer algorithm for
  sorting all $n$ numbers in the $k$ sorted lists. Your algorithm
- should run in $O(n\log k)$ (not $O(n\log n)$) time. You may assume
+should run in $O(n\log k)$ (not $O(n\log n)$) time. You may assume
  the numbers in each sorted list $L_i$ , for any $1 \le i \le k$, are
  sorted in ascending order. (20 points) 
 
-Note: 0 points will be given for this problem if your algorithm is not
+ote: 0 points will be given for this problem if your algorithm is not
 based on the divide-and-conquer strategy. 
 
+\paragraph{My answer}
+
+The algorithm is given as
+{\singlespacing
+\begin{algorithmic}
+\Function{mergeSortedLists}{$\{L_i\},i,j$}
+  \If{$i = j$}
+
+    \Return $L_i$;
+  \EndIf
+  \State $mid \gets (i+j)/2$;
+  \State $L_{left} \gets $  \Call{mergeSortedLists}{$\{L_1\},i,mid$};
+  \State $L_{right} \gets $ \Call{mergeSortedLists}{$\{L_1\},mid+1,j$};
+
+  \State $L \gets $ \Call{merge}{$L_{left}, L_{right}$};
+
+  \Return $L$;
+\EndFunction
+\end{algorithmic}
+} % End of singlespacing
+  
+The algorithm merges the lists by splitting the number of lists at
+each recursion step. and merging the returned lists.  The recursion
+depth of this is $\log k$, and at each level, the {\sc merge} routine
+(which  
+is the standard/stock merge routine from the merge sort) has
+$O(n)$ complexity.  Thus the entire algorithm has a complexity of 
+$O(n\log k)$.  The algorithm is correct, because the list will come
+out of the {\sc mergeSortedLists} merged (and sorted).
 
 
 
