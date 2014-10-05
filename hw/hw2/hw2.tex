@@ -56,11 +56,55 @@ Putting these together we get
  $(i,j)$ or $(A[i],A[j])$ is called an inversion of A. 
  \begin{enumerate}[label=(\alph*)]
  \item List all inversions of the array $(14,12,17,11,19)$. (5 points)
+ \item[] (14, 12), (14, 11), (12, 11), (17,11)
  \item What array with elements from the set $\{1,2,...,n\}$ has the
    most inversions? How many inversions does it have? (5 points) 
+ \item[]
+   The array that has the most inversions is an array that is sorted
+   in descending order.  The number of inversions is 
+   \begin{equation}
+     I(n) = \sum_{i=1}^{n-1}i = \frac{1}{2}(n-1)n.
+   \end{equation}
  \item Give a divide-and-conquer algorithm that computes the number of 
    inversions in array $A$ in $O(n\log n)$ time. (Hint: Modify merge
-   sort.) (20 points) 
+   sort.) (20 points)
+ \item[] 
+   An algorithm to do the counting of the inversions can be done with
+   a merge sort (with a small introduction of logic into the merge
+   process).
+   What needs to be added is when doing the merge, a counter is kept
+   that counts the inversions.  Say that we have the left and right
+   sorted arrays - along with the counted inversions in each of them
+   ($c_l$ and $c_r$). An inversion will occur now if an element in the
+   right array needs to be inserted into the left array.  Thus, if $m$
+   is the length of the left array, and $j$ is the index of the
+   pointer to the element being considered in the left array, then
+   there are $m-j$ elements of the left array that are bigger than the
+   current element in question.  Thus, if an element of the right
+   array is less than the element of question in the left array, that
+   constitutes $m-j$ inversions to add to the count.  After the merge
+   is finished and this cross sum of inversions has been found, then
+   the sum will be the cross inversions plue the counts from the left
+   and the right ($c_l$ and $c_r$).
+   This only adds constant complexity to the merge routine and thus,
+   the complexity of this sort will still be that of the merge sort:
+   $O(n\log n$.
+
+
+%   merge(A,i,mid,k)
+%   \State Create and array $B[1, \dots, k-i+1]$
+%   \State $left=i$, $right=mid+1$, $mark=1$
+%   \While{$left \le mid$ \And $right \le k$}
+%     \If{$A[left] \le A[right]$}
+%       \State $B[b] = A[a]; a++$
+%     \Else
+%       \State $B[b] = A[c]; c++$
+%     \EndIf
+%     \State $b++$
+%     \Endwhile
+
+
+
  \end{enumerate}
 Note: 0 points will be given for this problem if your algorithm is not
 based on the divide-and-conquer strategy.
