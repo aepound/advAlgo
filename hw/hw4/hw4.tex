@@ -1,0 +1,118 @@
+\documentclass{article}
+\input{commonheader}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{algpseudocode}
+\setcounter{MaxMatrixCols}{20}
+\usepackage{algpseudocode}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\title{CS 5050: Homework 3}
+\author{Andrew Pound}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+%\begin{enumerate}[label=(\alph*)]
+I worked on this assignment with Chad Cummings.
+\section{}
+Given $k$ sorted lists $L1, L2, . . . , Lk$ of $n/k$ distinct real
+numbers each, with $1 \le k \le n$, using a heap, design an $O(n \log
+k)$ time algorithm for sorting the set of $n$ numbers in the $k$
+sorted  lists. {\bf (20 points)
+
+Note:} 0 points will be given for this problem if your algorithm is
+not based on heap. 
+
+\section{}
+ Let $H$ be a max heap with $n$ distinct real-value keys that are
+ stored in an array $A$ (a max heap is one that stores the largest key
+ at its root). The largest key in $H$ can clearly be reported in
+ constant time (simply by looking at the key stored at $A[1]$, without
+ removing that key from $H$). We denote the operation of reporting the
+ largest key in $H$ (without removing that key from $H$) by
+ \emph{Report-Max(1)}. A generalized operation of
+ \emph{Report-Max(1)}, denoted by \emph{Report-Max(k)} can be defined
+ as follows: Given an integer $k$ as input, with $1 \le k \le n$,
+ report all the first $k$ largest keys (i.e., the 1st, 2nd, ..., kth
+ largest keys) in $H$ without removing them from $H$. Design an
+ algorithm to implement \emph{Report-Max(k)} in $O(k\log k)$
+ time. (Note: Although $k$ can be equal to $n$ in the worst case, $k$
+ in general is much smaller than $n$). {\bf (20 points)
+
+Comments:} You are allowed to modify $H$ when your algorithm is in the
+process of performing the \emph{Report-Max(k)} operation (although you
+do not have to modify $H$). But after your algorithm finishes
+performing \emph{Report-Max(k)}, $H$ must be exactly the same as
+before \emph{Report-Max(k)} is performed.
+
+\section{}
+
+ This problem is concerned with range queries (we have discussed a
+ similar problem in class) on a binary search tree $T$ whose keys are
+ real numbers (you may assume no two keys in $T$ are the same). Let
+ $h$ denote the height of $T$. The range query is generalization of
+ the ordinary search operation. The range of a range query on $T$ is
+ defined by a pair $[x_l ,x_r ]$, where $x_l$ and $x_r$ are real
+ numbers and $x_l \le x_r$ . Note that $x_l$ and $x_r$ need not be
+ keys stored in $T$. 
+
+You already know that the binary search tree $T$ can support the
+ordinary search, insert, and delete operations, each in $O(h)$
+time. You are asked to give an algorithm to efficiently perform the
+range queries. That is, in each range query, we are given a range
+$[x_l ,x_r ]$, and your algorithm should report all keys $x$ stored in
+$T$ such that $x_l \le x \le x_r$ . Your algorithm should run in $O(h
++ k)$ time, where $k$ is the number of keys of $T$ in the range $[x_l
+,x_r ]$. In addition, it is required that each key in the range $[x_l
+,x_r ]$ be reported only once and all keys in $[x_l ,x_r ]$ be
+reported in a sorted order. {\bf (20 points)}
+
+
+\section{}
+
+ Consider one more operation on the above binary search tree T in
+ Question 3: \emph{range-sum($x_l ,x_r$ )}. Given any range $[x_l ,x_r
+ ]$ with $x_l \le x_r$ , the operation \emph{range-sum($x_l ,x_r$ )}
+ reports the sum of the keys in T that are in the range $[x_l ,x_r ]$.
+
+You are asked to augment the binary search tree T, such that the
+\emph{range-sum($x_l ,x_r )$ operations, as well as the normal search,
+  insert, and delete operations, all take $O(h)$ time each, where $h$
+ is the height of $T$.
+You must present: (1) the design of your data structure (i.e., how you
+augment $T$); (2) the algorithm for implementing the
+\emph{range-sum($x_l ,x_r$ )} operation. (20 points)  
+
+
+
+
+{\singlespacing
+\begin{algorithmic}
+\Function{FindFeas}{A}
+  \State Find a pivot number $y$ in A \Comment{$O(n)$}
+  \State $A_1 = \{a_i | a_i < y \}$    \Comment{$O(n)$}
+  \State $A_2 = \{a_i | a_i > y \}$    \Comment{$O(n)$}
+ 
+  \State $feas = $ \Call{BlackBox}{$y$}
+  %\State $i = |A_1|$ \Comment{$i$ is the size of $A_1$}
+  %\State $j = |A_1|$ \Comment{$j$ is the size of $A_2$}
+  %\If{ }
+  %\EndIf
+  \If{ $feas$}
+    \State return {\sc Concatenate}( $A_1,y$, \Call{FindFeas}{$A_2$} ) 
+    \Comment{$O(|A_2|)$}
+  \Else%{ $feas$}
+    \State return \Call{FindFeas}{$A_1$}
+    \Comment{$O(|A_1|)$}
+  \EndIf
+\EndFunction
+\end{algorithmic}
+}
+
+\end{document}
