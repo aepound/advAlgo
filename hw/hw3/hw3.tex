@@ -1,0 +1,300 @@
+\documentclass{article}
+\input{commonheader}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{algpseudocode}
+\setcounter{MaxMatrixCols}{20}
+\usepackage{algpseudocode}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\title{CS 5050: Homework 3}
+\author{Andrew Pound}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+%\begin{enumerate}[label=(\alph*)]
+I worked on this assignment with Chad Cummings.
+\section{}
+ In the SELECTION algorithm we studied in class, the input numbers are
+ divided into groups of five. Will the algorithm still work in linear
+ time if they are divided into groups of seven? 
+Please justify your answer.
+
+
+\paragraph{Answer}
+Yes. The recurrence for the complexity of the selection algorithm
+would now be
+\begin{equation*}
+  T(n) = T\left(\max\left\{\left|A_1\right|,
+      \left|A_2\right|\right\}\right)  + T\left(\frac{n}{7}\right) 
+      + n. 
+\end{equation*}
+Now we need to calculate the $\max\left\{\left|A_1\right|,
+      \left|A_2\right|\right\}$.
+Using the same reasoning as in class, we can draw the diagram below.
+Break the numbers into groups of 7, and sort them in ascending order. 
+\newcommand{\yit}{\mathit{x}}
+\begin{equation*}
+  \text{7 rows}
+  \underbrace{
+  \begin{bmatrix}
+    \xbf &  &\xbf &  &\cdots &  &\xbf & \xbf & 
+     &  &  &  &  &  & \\
+%     \vee&&\vee&&&&\vee&\vee&
+%     &&&&&&\\
+    \xbf &  &\xbf &  &\cdots &  &\xbf & \xbf & 
+     &  &  &  &  &  & \\
+%     \vee&&\vee&&&&\vee&\vee&
+%     &&&&&&\\
+    \xbf &  &\xbf &  &\cdots &  &\xbf & \xbf & 
+    &  &  &  &  &  & \\
+     \vee&&\vee&&&&\vee&\vee&
+     &&&&&&\\
+    \xbf & < &\xbf & < &\cdots & < &\xbf & y & 
+    \yit & < &\cdots & < & \yit & < & \yit\\
+     &&&&&&&\vee&
+     \vee&&&&\vee&&\vee\\    
+        &  &  &  &  &  & & \yit &
+    \yit &  &\cdots &  & \yit &  & \yit\\
+        &  &  &  &  &  & & \yit&
+    \yit &  &\cdots &  & \yit &  & \yit\\
+        &  &  &  &  &  & & \yit&
+    \yit &  &\cdots &  & \yit &  & \yit
+  \end{bmatrix}}_{n/7 \text{ columns}}
+\end{equation*}
+We have to calculate the number of the bold x's. 
+\begin{equation*}
+  N_b = \frac{4}{7}\frac{n}{2} - 1 = \frac{4}{14}n - 1.
+\end{equation*}
+$N_b$ is the number of items that are less than $y$ for sure. Thus we
+can say that at least $N_b = \frac{4}{14}n < y$. So we know that
+$n-N_b = \frac{10}{14}n = \frac{5}{7}n$ is the maximum number that could
+be larger than $y$. Thus the maximum size for $\left| A_2\right|$ is
+then $\frac{5}{7}n$.
+The analysis is similar for the maximum value $\left|A_1\right|$.
+Thus, the recurrence is 
+\begin{equation*}
+  T(n) = T\left(\frac{5}{7}n\right) + T\left(\frac{1}{7}n\right) + n.
+\end{equation*}
+This can be solved to give linear time. So, we will try this by
+substitution.
+We want to find $c$ such that 
+\begin{equation*}
+  T(n) \le cn.
+\end{equation*}
+Let's assume $T\left(\frac{5}{7}n\right) \le c\frac{5}{7}n,$ and
+$T\left(\frac{1}{7}n\right) \le c\frac{1}{7}n.$  Then we can consider
+\begin{equation*}
+  T(n) \le c\frac{5}{7}n + c\frac{1}{7}n + n  = c\frac{6}{7}n + n
+  \stackrel{?}{\le} cn. 
+\end{equation*}
+Moving things areound, we can see that 
+\begin{equation*}
+  n \stackrel{?}{\le} \frac{c}{7}n,
+\end{equation*}
+which is true if $c \ge 7$ (with $n_0 = 1$).  Thus we can say that 
+$T(n) = O(n)$.
+
+
+
+\section{}
+Suppose you are consulting for an oil company, which is planning a
+large pipeline (called the main pipeline) running horizontally from
+east to west through an oil field of n wells. From each well, a spur
+pipeline is to be connected directly to the main pipeline along a
+shortest path (going to either the north or the south), as shown in
+Figure 1. 
+
+Suppose there are $n$ wells, represented by $n$ points $p_1, p_2,
+\dots , p_n$ in the plane. We are given the x- and y-coordinates of the
+$n$ wells $p_i = (x_i , y_i)$ for $i = 1, 2, \dots, n$. Note that the
+wells are not given in any sorted order. Our goal is to pick an
+optimal location for the main pipeline (i.e., find the y-coordinate of
+the main pipeline) such that the total sum of the lengths of the spur
+pipelines is minimized. For simplicity, we assume no two wells have
+the same x-coordinate or y-coordinate. Design an $O(n)$ time algorithm
+to compute an optimal location for the main pipeline.
+
+\paragraph{Answer}
+The optimal placement for the line will be the median of the wells'
+posistions in the y-direction.  If there are an even number of wells,
+then anywhere in between the two medians will be sufficient to
+minimize the amount of spur piping.  The reasoning is that if you are
+anywhere outiside the median, then there are more spurs on the side
+toward the median, than on the other side.  Thus, if you move the main
+towards the median, then you will be shortening the amount of spur
+piping, because of the differential of the number of spurs on either
+side. This effect is countered, when the main reaches the median, as
+any further shifting will add piping.
+
+Now because we have now reduced this to finding the median of a set of
+numbers (the y-coordinates), we can just use the Selection algorithm.
+The Selection algorithm has linear time complexity, thus satisfying
+our constraints, and can be made to return the median by using
+{\sc Selection}$\left(A,1,n,\floor{n/2}\right).$
+
+
+\section{}
+We consider a \emph{weighted} version of Problem 2. Because of the
+locations, 
+the cost for building spur pipelines on different wells may be
+different. For each well $p_i$, it is associated with a weight $w_i >
+0$, representing the cost for building a spur line of a unit length,
+and in other words, if the length of the spur line for $p_i$ is $l$,
+then the cost for building the spur line is $w_i\cdot l$
+
+For each well $p_i$, we are given its x- and y-coordinates $(x_i,
+y_i)$ and weight $w_i$. Again, the wells are not given in any sorted
+order. Our goal is to pick an optimal location for the main pipeline
+(i.e., find the y-coordinate of the main pipeline) such that the total
+sum of the cost of building the spur pipelines for all wells is
+minimized. For simplicity, we assume no two wells have the same
+x-coordinate or y-coordinate. Design an $O(n)$ time algorithm to
+compute an optimal location for the main pipeline.  
+
+\paragraph{Answer}
+The best placing of the main pipe will be when the costs on either
+side of the main line are equal.  The argument is the same as for the
+previous problem, but utilizes the linear cost instead of just
+length. 
+
+We will need to use a weighted selection algorithm.  The idea is still
+to find a ``median'' of the y-coordinates, but to also take into
+account the costliness of the lengths of the spur lines.
+So we will use the algorithm below.
+
+{\singlespacing
+\begin{algorithmic}
+\Function{WeigtedSelection}{A,$C_1,C_2$}
+  \State Find a pivot number $y$ in A \Comment{$O(n)$}
+  \State $A_1 = \{a_i | a_i < y \}$    \Comment{$O(n)$}
+  \State $A_2 = \{a_i | a_i > y \}$    \Comment{$O(n)$}
+ 
+
+  \State Compute $W_1 = w(A_1)$   \Comment{$O(n)$}
+  \State Compute $W_2 = w(A_2)$   \Comment{$O(n)$}
+  %\State $i = |A_1|$ \Comment{$i$ is the size of $A_1$}
+  %\State $j = |A_1|$ \Comment{$j$ is the size of $A_2$}
+  %\If{ }
+  %\EndIf
+  \If{ $C_1 + W_1 = C_2 + W_2$}
+    \State return y
+  \ElsIf{$C_1 + W_1 > C_2 + W_2 $}
+    \State return  \Call{WeigtedSelection}{$A_1,C_1,C_2+W_2$}% $A_1,y$ 
+    \Comment{$O(|A_1|)$}
+  \Else%{ $feas$}
+    \State return \Call{WeigtedSelection}{$A_2,C_1+W_1,C_2$}
+    \Comment{$O(|A_2|)$}
+  \EndIf
+\EndFunction
+\end{algorithmic}
+}
+
+The pivot $y$ needs to be found as the median of the y-coordinates, as
+in the regular Selection algorithm.  The algorithmic complexity is
+given by
+\begin{equation*}
+     T(n) = T\left(\max\left\{\left|A_1\right|,
+      \left|A_2\right|\right\}\right)  + T\left(\text{time to find
+      pivot}\right)   + n. 
+\end{equation*}
+This is the same complexity as for the Selection algorithm, thus this
+is a linear complexity algorithm.
+
+
+
+
+
+
+
+
+
+\section{}
+Suppose we are given a ``black-box'' which is a program procedure such
+that given any real number $x$ as the input, the procedure can tell
+whether $x$ is a feasible value in constant time. Further, we have the
+following {\bf basic rules}: If $x$ is a feasible value, then any
+number less 
+than $x$ is also a feasible value; similarly, if $x$ is not a feasible
+value, then any number larger than $x$ is not a feasible value. 
+
+Given an array $A[1, \dots , n]$ of $n$ real numbers, we want to find
+all feasible values of the elements of $A$ by using the black-box. For
+each element $x$ of $A$, we can call the black-box on $x$ to determine
+whether $x$ is feasible value. In this way, by calling the black-box 
+$n$ times, we can find all feasible values of $A$ in $O(n)$
+time. However, by making use of the above basic rules, it is possible
+to find all feasible values of $A$ by calling the black-box
+significantly less than $n$ times. For simplicity of discussion, we
+assume no two numbers of $A$ are equal.
+
+
+\begin{enumerate}[label=(\alph*)]
+\item Design an $O(n\log n)$ time algorithm to find all feasible
+  values of $A$ by calling the blackbox at most $O(\log n)$ times.
+\item[]
+A straightforward way to solve this problem is to sort the array
+elements into ascending order.  This would require $O(n\log n)$
+time. Then, once the elements have been sorted, then a binary search
+could be done using the blackbox to find the largest element that
+is feasible (or alternately, the smallest one that doesn't).  This
+will prune the array, and will only require $\log n$ steps to find the
+largest feasible element. Thus, the blackbox routine will only be
+called $\log n$ times.  Thus the entire complexity of this will be
+$T(n) = O(n\log n) + O(\log n) = O(n\log n).$
+
+\item Improve your algorithm to $O(n)$ time such that the total number
+  of calls on the blackbox is still at most $O(\log n)$.
+\item[]
+The idea here is we want to find the dividing line between the set of
+feasible and not feasible set.  We can do this by using the Selection
+algorithm and modifying it a bit.
+The Algorithm can be given as
+
+
+{\singlespacing
+\begin{algorithmic}
+\Function{FindFeas}{A}
+  \State Find a pivot number $y$ in A \Comment{$O(n)$}
+  \State $A_1 = \{a_i | a_i < y \}$    \Comment{$O(n)$}
+  \State $A_2 = \{a_i | a_i > y \}$    \Comment{$O(n)$}
+ 
+  \State $feas = $ \Call{BlackBox}{$y$}
+  %\State $i = |A_1|$ \Comment{$i$ is the size of $A_1$}
+  %\State $j = |A_1|$ \Comment{$j$ is the size of $A_2$}
+  %\If{ }
+  %\EndIf
+  \If{ $feas$}
+    \State return {\sc Concatenate}( $A_1,y$, \Call{FindFeas}{$A_2$} ) 
+    \Comment{$O(|A_2|)$}
+  \Else%{ $feas$}
+    \State return \Call{FindFeas}{$A_1$}
+    \Comment{$O(|A_1|)$}
+  \EndIf
+\EndFunction
+\end{algorithmic}
+}
+The time complexity is given as
+\begin{equation*}
+     T(n) = T\left(\max\left\{\left|A_1\right|,
+      \left|A_2\right|\right\}\right)  + T\left(\text{time to find
+      pivot}\right)   + n. 
+\end{equation*}
+If we find the pivot $y$ as in the selection sort, then we can then
+use the same analysis as that used to  find the complexity of the
+Selection algorithm, and we can see that this will then have linear
+time, while only using the Blackbox $\approx \log n$ times.
+
+
+
+\end{enumerate}
+
+Note that you are not responsible for designing the blackbox and just
+assume it is given as a program procedure for you to use.
+\end{document}
