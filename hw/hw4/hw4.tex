@@ -29,6 +29,69 @@ sorted  lists. {\bf (20 points)
 Note:} 0 points will be given for this problem if your algorithm is
 not based on heap. 
 
+
+\subsection{My answer}
+I will answer this question utilizing a max heap.  I will thus assume
+that the lists are sorted in descending  order, and the final array of
+$n$ numbers will be sorted in descending order. 
+ 
+In order to accomplish the task of sorting the $k$ sorted lists, I
+will need to augment the heap with a label.  Any operation or movement 
+of the elements in the heap will also be mirrored in the index array. 
+
+\paragraph{Algorithm description}First construct a $k$-heap from the
+first elements of the  
+lists. The index of the list from which the elements cam is to be
+loaded into the companion array.  
+
+Then, the max is popped off the heap, and another number is inserted
+into the heap from the same list as the one that was just popped.
+This continues until a sorted list is emptied.  In that case, no new
+element is inserted, and the popping and inserting continues.
+
+\paragraph{Psuedocode} The psuedocode is given in the algorithm
+below. 
+
+
+{\singlespacing
+\begin{algorithmic}
+\Function{SortByHeap}{$L_1,L_2,\dots,L_k$}
+  \State Create an indexed heap $H$ using the first elements of each $L_i$
+  \Comment{$O(k)$}
+  \For{$i=1,\dots n$}
+    \State $\{B[i], index\} = $\Call{extract-max}{$H$} 
+    \Comment{$O(\log k)$}
+    \State Insert next element from List $L_{index}$ into $H$ (unless
+    $L_{index}$ is empty).
+    \Comment{$O(\log k)$}    
+  \EndFor
+  
+  \State {\bf return} $B$
+\EndFunction
+\end{algorithmic}
+}
+
+\paragraph{Complexity}
+The complexity of this algorithm is given as
+\begin{equation}
+  T(n) = O(k) + 2n\log k = O(n\log k),
+\end{equation}
+because the loop is executed $n$ times and is $O(\log k)$ at each
+iteration.  Thus, the whole algorithm is $O(n\log k)$.
+
+\paragraph{Correctness}
+Because each list is already sorted in descending order, the largest
+elements from each list are loaded into the heap first.  Then the
+largest is extract from the max heap (and its index indicating that it
+is from the $j$th list).  It is then necessary to insert
+the next element from the $j$the list, because there is the
+possibility that the next largest element could be from the same list
+as the max that was just popped from the heap.  By inserting from the
+same list as the largest was from ensures that the next largest is for
+sure the next element extacted from the heap. 
+
+
+
 \section{}
  Let $H$ be a max heap with $n$ distinct real-value keys that are
  stored in an array $A$ (a max heap is one that stores the largest key
@@ -50,6 +113,12 @@ process of performing the \emph{Report-Max(k)} operation (although you
 do not have to modify $H$). But after your algorithm finishes
 performing \emph{Report-Max(k)}, $H$ must be exactly the same as
 before \emph{Report-Max(k)} is performed.
+
+
+
+
+
+
 
 \section{}
 
@@ -73,6 +142,44 @@ $T$ such that $x_l \le x \le x_r$ . Your algorithm should run in $O(h
 ,x_r ]$ be reported only once and all keys in $[x_l ,x_r ]$ be
 reported in a sorted order. {\bf (20 points)}
 
+\subsection{My Answer}
+
+{\singlespacing
+\begin{algorithmic}
+\Function{rangeQuery}{$T,x_l,x_r$}
+  \State $v = T.root$
+%  \Comment{$O(k)$}
+  \State \Call{processNodes}{$v,x_l,x_r$}
+\EndFunction
+\end{algorithmic}
+\begin{algorithmic}
+\Procedure{processNodes}{$v,x_l,x_r$}
+  \If{ $v \equiv Null$}
+    \State {\bf return 0}
+  \EndIf
+  \If{ $v.key > x_l$ }
+    \State \Call{processNodes}{$v.left,x_l,x_r$}
+  \EndIf
+
+  \If{ $v.key \in [x_l, x_2]$ }
+    \State \Call{report}{$v$}
+  \EndIf
+
+  \If{ $v.key < x_r$ }
+    \State \Call{processNodes}{$v.right,x_l,x_r$}
+  \EndIf
+\EndProcedure
+\end{algorithmic}
+}
+
+
+
+
+
+
+
+
+
 
 \section{}
 
@@ -82,37 +189,13 @@ reported in a sorted order. {\bf (20 points)}
  reports the sum of the keys in T that are in the range $[x_l ,x_r ]$.
 
 You are asked to augment the binary search tree T, such that the
-\emph{range-sum($x_l ,x_r )$ operations, as well as the normal search,
+\emph{range-sum($x_l ,x_r $)} operations, as well as the normal search,
   insert, and delete operations, all take $O(h)$ time each, where $h$
  is the height of $T$.
 You must present: (1) the design of your data structure (i.e., how you
 augment $T$); (2) the algorithm for implementing the
-\emph{range-sum($x_l ,x_r$ )} operation. (20 points)  
+\emph{range-sum($x_l ,x_r$ )} operation. {\bf (20 points)  }
 
 
-
-
-{\singlespacing
-\begin{algorithmic}
-\Function{FindFeas}{A}
-  \State Find a pivot number $y$ in A \Comment{$O(n)$}
-  \State $A_1 = \{a_i | a_i < y \}$    \Comment{$O(n)$}
-  \State $A_2 = \{a_i | a_i > y \}$    \Comment{$O(n)$}
- 
-  \State $feas = $ \Call{BlackBox}{$y$}
-  %\State $i = |A_1|$ \Comment{$i$ is the size of $A_1$}
-  %\State $j = |A_1|$ \Comment{$j$ is the size of $A_2$}
-  %\If{ }
-  %\EndIf
-  \If{ $feas$}
-    \State return {\sc Concatenate}( $A_1,y$, \Call{FindFeas}{$A_2$} ) 
-    \Comment{$O(|A_2|)$}
-  \Else%{ $feas$}
-    \State return \Call{FindFeas}{$A_1$}
-    \Comment{$O(|A_1|)$}
-  \EndIf
-\EndFunction
-\end{algorithmic}
-}
 
 \end{document}
