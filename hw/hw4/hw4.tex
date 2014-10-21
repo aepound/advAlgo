@@ -88,7 +88,7 @@ the next element from the $j$the list, because there is the
 possibility that the next largest element could be from the same list
 as the max that was just popped from the heap.  By inserting from the
 same list as the largest was from ensures that the next largest is for
-sure the next element extacted from the heap. 
+sure the next element extracted from the heap. 
 
 
 
@@ -144,6 +144,11 @@ reported in a sorted order. {\bf (20 points)}
 
 \subsection{My Answer}
 
+\paragraph{Description}
+
+\paragraph{Psuedocode}
+
+
 {\singlespacing
 \begin{algorithmic}
 \Function{rangeQuery}{$T,x_l,x_r$}
@@ -174,7 +179,9 @@ reported in a sorted order. {\bf (20 points)}
 
 
 
+\paragraph{Complexity}
 
+\paragraph{Correctness}
 
 
 
@@ -195,6 +202,55 @@ You are asked to augment the binary search tree T, such that the
 You must present: (1) the design of your data structure (i.e., how you
 augment $T$); (2) the algorithm for implementing the
 \emph{range-sum($x_l ,x_r$ )} operation. {\bf (20 points)  }
+
+
+\subsection{My Answer}
+\paragraph{Description}
+
+
+\paragraph{Psuedocode}
+
+{\singlespacing
+\begin{algorithmic}
+\Function{rangeSum}{$v,x_l,x_r$}
+  \State $\mathcal{R} = \left[x_l,x_r\right]$
+  \If{ $v \equiv Null$}
+    \State {\bf return 0}
+  \EndIf
+  \If{ $v.key \in \mathcal{R}$ }
+    \If{$v.parent.key \in \mathcal{R}$ {\bf and} $v.parent.key < v.key$}
+      \State $sum_l = v.leftSum$
+    \Else 
+      \State $sum_l = $ \Call{rangeSum}{$v.left,x_l,x_r$}      
+    \EndIf
+    
+    \State $sum = v.key$
+
+    \If{$v.parent.key \in \mathcal{R}$ {\bf and} $v.parent.key < v.key$}
+      \State $sum_l = v.rightSum$
+    \Else 
+      \State $sum_l = $ \Call{rangeSum}{$v.right,x_l,x_r$}      
+    \EndIf
+
+  \Else $\quad(v.key \notin \mathcal{R})$
+    \State $sum = 0$
+    \If{$v.key > x_r$}
+      \State $sum_l = $\Call{rangeSum}{$v.left,x_l,x_r$}
+    \Else $\quad (v.key < x_l)$
+      \State $sum_r = $\Call{rangeSum}{$v.right,x_l,x_r$}
+    \EndIf
+  \EndIf
+  \State {\bf return} $sum_l + sum + sum_r$
+\EndFunction
+\end{algorithmic}
+}
+
+\paragraph{Correctness}
+
+
+\paragraph{Complexity}
+
+
 
 
 
