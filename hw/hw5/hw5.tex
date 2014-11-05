@@ -1,0 +1,327 @@
+\documentclass{article}
+\input{../hw4/commonheader}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{algpseudocode}
+\setcounter{MaxMatrixCols}{20}
+\usepackage{algpseudocode}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\title{CS 5050: Homework 5}
+\author{Andrew Pound}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+%\begin{enumerate}[label=(\alph*)]
+I worked on this assignment with Chad Cummings.
+\section{}
+ Suppose we use the union-by-height approach (without path
+ compression) to implement the union and find operations on the
+ disjoint sets. Give a sequence of $O(n)$ union and find operations on
+ the $n$ numbers $1,2,\dots,n$ such that the total time of these
+ operations is $\Theta(n \log n)$ (note that the $\Theta$-notation
+ means  that the time is not only $O(n \log n)$ but also $\Omega(n\log
+ n)$). You may assume each number $i$ has already been initialized as
+ a set $\{i\}$. {\bf (20 points)}
+
+Note: As discussed in class, the union-by-height approach is the same
+as the union-by-rank approach without path compression because the
+rank of each node is equal to its height in the tree since there is no
+path compression. 
+
+\paragraph{My answer}
+In order to really get this working, we need to build up the tree to
+be at most $\log n$ in height.  In order to ensure that, we need to
+build each sub tree and only union when we have trees of the same
+height.
+
+
+
+
+\paragraph{Psuedocode} The psuedocode for the sequence of steps is
+given below.
+
+
+{\singlespacing
+\begin{algorithmic}
+%\Function{}{$L_1,L_2,\dots,L_k$}
+    \State $step = .75$
+    \While{$step < N/2$}
+         
+      \For {$i = 1:max(2*step,3):N$}
+        \If {$i+step <= N$}
+          \State \Call{union}{$i, i+\ceil{step}$}       
+        \EndIf  
+      \EndFor
+      \State  $step = 2*step$    
+      \State $i_{last} = i$
+    \EndWhile
+    
+    \State \Call{union}{1,N};
+    \For {$i = 1:N$}
+       \State \Call{find}{$i_{last}$}
+    \EndFor
+%\EndFunction    
+
+\end{algorithmic}
+}
+\paragraph{Explanation}
+The code above does some fancy stuff with a variable called $step$.
+Essentially, the step variable gets double everytime through the 
+loop. This, makes sure that when performing the union, the 2 nodes
+that are being called are in different trees in the union find.
+The first 2 times through are something of a base case, because we
+need to build up the small little trees with only 3 nodes - a parent
+and 2 children. This is the reason for using the ceiling function.
+Thus each time through the for loop, we are producing the following:
+\begin{center}
+\begin{tabular}{cccccc}
+  \toprule
+  iteration &1 & 2 &3 & 4 &5 \\
+  step & 0.75 & 1.5 & 3 & 6 &\dots\\
+  \midrule
+  & (1,2)  & (1,3)  & (1,4)    & (1,7)  & \dots \\
+  & (4,5)  & (4,6)  & (7,10)   & (13,19)& \dots \\
+  & (7,8)  & (7,9)  & (13,16)  & \vdots & \dots \\
+  & (10,11)& (10,12)& $\vdots$ & & \\
+  \bottomrule
+\end{tabular}
+\end{center}
+  % \State Create an indexed heap $H$ using the first elements of each $L_i$
+  % \Comment{$O(k)$}
+  % \For{$i=1,\dots n$}
+  %   \State $\{B[i], index\} = $\Call{extract-max}{$H$} 
+  %   \Comment{$O(\log k)$}
+  %   \State Insert next element from List $L_{index}$ into $H$ (unless
+  %   $L_{index}$ is empty).
+  %   \Comment{$O(\log k)$}    
+  % \EndFor
+  
+
+  % \State {\bf return} $B$
+
+
+
+\section{}
+We consider the following \emph{unlimited} knapsack problem. The
+problem is the same as the knapsack problem we discussed in class,
+except that there is an unlimited supply of each item. Specifically,
+we are given $n$ item sizes $a_1 ,a_2 ,\dots,a_n$ , which are positive
+integers. The knapsack size is a positive integer $M$. The goal is to
+find a subset $S$ of items (to pack in the knapsack) such that the sum
+of the sizes of the items in $S$ is exactly $M$ and each item is
+allowed to appear in $S$ multiple times. 
+
+Design an $O(nM)$ time dynamic programming algorithm for solving this
+unlimited knapsack problem. For simplicity, you only need to determine
+whether there exists a subset $S$ of items whose sizes sum to $M$
+(namely, if there exists such a subset, you do not need to report the 
+actual subset). {\bf (20 points)}
+
+
+
+\paragraph{Algorithm code}
+
+{\singlespacing
+\begin{algorithmic}
+\Function{unlimKnap}{$A,M$}
+    \For{$k = 1:M$}
+      \State $P(0,k) = 0$
+    \EndFor
+    \For{$i = 0:n$}
+      \State $P(i,0) = 1$
+    \EndFor
+    
+    \For {$k = 1:M$}
+      \For {$i = 1:n$}
+        % Original knapsack code:
+        % \If {$k \ge a_i$}
+        %   \State $P(i,k) = \max\left(P(i-1,k),P(i-1,k-a_i)\right)$
+        % \Else
+        %   \State $P(i,k) = P(i-1,k)$
+        % \EndIf  
+        \If {$P(i-1,k) \equiv 1$}
+           \State $P(i,k) = 1$
+        \Else
+          \If{$P(i,k-a_i) \equiv 1\quad \Vert\quad P(i-1,k-a_i) \equiv 1$} 
+            \State $P(i,k) = 1$
+          \Else
+            \State $P(i,k) = 0$
+          \EndIf
+        \EndIf  
+
+      \EndFor
+    \EndFor
+    
+\EndFunction    
+\end{algorithmic}
+}
+
+This algorithm adds in an extra if conditional at each iteration(the
+check if $P(i,k-a_i)$ is true), to
+check whether another $a_i$ can fit in the knapsack.  This only adds a
+constant amount to each iteration, so the complexity is the same as
+the kanpsack treatment in class - $O(nM)$.
+
+
+
+\section{}
+Here is a more common variation of the knapsack problem. We are given
+$n$ items of sizes $a_1 ,a_2 ,\dots,a_n$ , which are positive
+integers. Further, the $i$-th item $a_i$ has a positive value
+$value(a_i )$, for each $1 \le i \le n$. The knapsack size is a
+positive integer $M$. The goal is to  find a subset $S$ of items such
+that the sum of the sizes of all items in $S$ is at most $M$ (i.e.,
+$\sum_{ a_i \in S} a_i \le M$) and the sum of the values of all items
+in $S$ is maximized (i.e., $\sum_{a_i \in S} value(a_i )$ is
+maximized). Here, each item can be used only once. 
+
+Design an $O(nM)$ time dynamic programming algorithm for solving this
+knapsack problem. For simplicity, you only need to report the sum of
+the values of all items in the optimal solution subset $S$ and you do
+not need to report the actual subset $S$. {\bf (20 points)}
+
+\paragraph{Algorithm}
+{\singlespacing
+\begin{algorithmic}
+\Function{unlimKnap}{$A,M$}
+    \For{$k = 1:M$}
+      \State $P(0,k) = 0$
+      \State $V(0,k) = 0$
+    \EndFor
+    \For{$i = 0:n$}
+      \State $P(i,0) = 1$
+      \State $V(i,0) = 0$
+    \EndFor
+    
+    \For {$k = 1:M$}
+      \For {$i = 1:n$}
+        % Original knapsack code:
+        % \If {$k \ge a_i$}
+        %   \State $P(i,k) = \max\left(P(i-1,k),P(i-1,k-a_i)\right)$
+        % \Else
+        %   \State $P(i,k) = P(i-1,k)$
+        % \EndIf  
+        \If {$k \ge a_i$}
+          \State $p_1 = P(i-1,k)$
+          \State $v_1 = V(i-1,k)$
+          \State $p_2 = P(i-1,k-a_i)$
+          \State $v_2 = V(i-1,k-a_i)$
+          
+          \State $P(i,k) = \max\left(,P(i-1,k-a_i)\right)$
+          \If{$p_1 \& p_2$}
+            \If{ $v_1 \ge v_2 + value(i)$}
+              \State $V(i,k) = V(i-1,k)$
+            \Else
+              \State $V(i,k) = V(i-1,k-a_i) + value(i)$
+            \EndIf
+          \Else
+            \If{$p_2$}
+              \State $V(i,k) = V(i-1,k-a_i) + value(i)$
+            \Else
+              \State $V(i,k) = V(i-1,k)$
+            \EndIf
+          \EndIf
+        \Else
+          \State $P(i,k) = P(i-1,k)$
+          \State $V(i,k) = V(i-1,k)$
+        \EndIf  
+      \EndFor
+    \EndFor
+    \State {\bf return} $V(n,M)$
+\EndFunction    
+\end{algorithmic}
+}
+This algorithm is a modification of the original kanpsack problem as
+treated in class.  Each iteration only adds in a constant number of
+operations to keep track of the sum of the values, and thus the
+complexity stays the same as the original - $O(nM)$.  A bit of care
+needs to be taken to determine which branch you want to follow, and
+that is the added complexity of the extra if statements in the
+algorithm. But it is only needed to maintain the largest sum of
+values. 
+
+
+
+
+
+\section{}
+Given an array $A[1 \dots n]$ of $n$ distinct numbers, design an
+$O(n^2 )$ time dynamic programming algorithm to find a longest
+monotonically increasing subsequence of $A$. Your algorithm needsto
+report not only the length but also the actual longest subsequence. 
+\paragraph{My answer}
+In order to do this, we adapt the Longest Common Subsequence code from
+class to compare $A$ with itself, and changing the criteria of what we
+are keeping track of.
+
+We realize that we are not looking for when the end of each sequence
+is the same, rather, we look for when the end of the first sequence is
+less than the end of the second.  This will then  allows
+sequences with dropping out terms in the middle.
+
+\paragraph{Psuedocode} The psuedocode is given in the algorithm
+below. 
+
+{\singlespacing
+\begin{algorithmic}
+\Function{longMonoSubseq}{$A$}
+    \State $X = A$
+    \State $Y = A$
+    \For{$k = 1:n$}
+      \State $C(0,k) = 0$
+      \State $C(k,0) = 0$
+    \EndFor
+    
+    \For {$i = 1:n$}
+      \For {$j = 1:n$}
+        \If {$X(i) < Y(j)$}
+          \State $C(i,j) = 1+C(i-1,j-1)$
+          \State $F(i,j) = 1$
+        \Else
+          \If $C(i-1,j) > C(i,j-1)$
+            \State $C(i,j) = C(i-1,j)$
+            \State $F(i,j) = 2$
+          \Else
+            \State $C(i,j) = 1+C(i,j-1)$
+            \State $F(i,j) = 3$
+          \EndIf
+        \EndIf
+      \EndFor
+    \EndFor
+    \State $i = n$
+    \State $k = M$
+    \While{$ k != 0$}
+      \If{$F(i,k) \equiv 1$}
+        \State \Call{report}{$a_i$}
+        \State $k = k-1$
+        \State $i = i-1$
+      \Else
+        \If{$F(i,k) \equiv 2$}
+          \State $i = i-1$
+        \Else \Comment{$F(i,k) \equiv 3$}
+          \State $k = k-1$
+        \EndIf
+      \EndIf
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
+
+We coded this up in \matlab{} and it worked well. 
+
+The complexity of this algorithm is $O(n^2)$, because the full
+$n\times n$ array must be filled. At each iteration, we use only a
+constant number of operations, thus the complexity is governed by the
+two nested for-loops.
+
+
+
+
+\end{document}
