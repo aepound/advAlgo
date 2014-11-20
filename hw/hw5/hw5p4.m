@@ -46,7 +46,7 @@ for iter = 2:n+1
         end
     end
 end
-
+F(end,:) = [];
 ii = n;
 k = n;
 while k ~= 0 && ii ~= 0
