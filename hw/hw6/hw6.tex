@@ -1,0 +1,152 @@
+\documentclass{article}
+\input{../hw4/commonheader}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{algpseudocode}
+\setcounter{MaxMatrixCols}{20}
+\usepackage{algpseudocode}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\title{CS 5050: Homework 5}
+\author{Andrew Pound}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+%\begin{enumerate}[label=(\alph*)]
+I worked on this assignment with Chad Cummings.
+\section{}
+Given an undirected graph $G = (V, E)$, let $n = |V|$, i.e., the total 
+number of vertices of $G$, and $m = |E|$, i.e., the total number of
+edges of $G$. The length of a path in $G$ is the number of edges in
+the path. For any two vertices $u$ and $v$, a shortest path between
+$u$ and $v$ is a path connecting u and v with the minimum length. 
+
+Design an $O(n(m + n))$ time algorithm to compute the lengths of the
+shortest paths between all pairs of vertices in $G$ (i.e., for every
+pair of vertices $u$ and $v$, compute the length of the shortest path
+from $u$ to $v$). {\bf (20 points) }
+
+
+
+{\singlespacing
+\begin{algorithmic}
+\Function{BFS}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.color  = white$
+      \State $u.d = +\infinity$
+      \State $u.pre = NULL$
+    \EndFor
+    
+    \State $s.color = blue$
+    \State $s.d = 0$
+    
+    \State Initialize $Q = \emptyset$
+    \State \Call{enqueue}{$Q,s$}
+    \While{$ Q != \emptyset$}
+      \State $u = $ \Call{dequeue}{$Q$}
+      \Comment{Remove from the front of queue}
+      \For{each vertex $v \in Adj(u)$}
+        \If{$v.color == white$}
+          \State $v.color = blue$
+          \State \Call{enqueue}{$Q,v$}
+          \Comment{Insert at end of queue}
+          \State $v.pre = u$
+          \State $v.d = u.d + 1$
+        \EndIf
+      \EndFor
+      \State $u.color = red$
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
+
+
+
+\section{}
+Given a graph $G = (V, E)$ (either directed or undirected), let $n = 
+|V|$ and $m = |E|$. In class we gave a depth-first-search (DFS)
+algorithm that is recursive and runs in $O(m + n)$ time.  Usually a
+recursive algorithm can be replaced by a non-recursive algorithm by
+using a stack. 
+
+Design a non-recursive DFS algorithm by using a stack, and your
+algorithm should also run in $O(m + n)$ time. As we did in class, your  
+algorithm should compute the predecessor $v.pre$ for each vertex v of
+the graph, i.e., if v is visited by the algorithm through the edge
+$(u, v)$, then $v.pre = u$. As discussed in class, the predecessor
+information essentially maintains the DFS tree. {\bf (20 points) }
+
+
+
+
+
+
+
+
+\section{}
+Given an undirected graph $G = (V, E)$, let $n = |V|$ and $m
+=|E|$. Suppose $s$ and $t$ are two vertices in $G$. We have already
+known that we can find a shortest path from $s$ to $t$ by using the 
+breadth-first-search (BFS) algorithm. However, there might be multiple  
+different shortest paths from $s$ to $t$ (e.g., see Fig. 1 as an
+example). 
+
+Design an $O(m + n)$ time algorithm to compute the number of shortest
+paths from $s$ to $t$ (your algorithm does not need to list all the
+paths, but only report the number of the paths). (Hint: Modify the BFS 
+algorithm.) {\bf (20 points) }
+
+
+
+{\singlespacing
+\begin{algorithmic}
+\Function{BFS}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.color  = white$
+      \State $u.d = +\infinity$
+      \State $u.pre = NULL$
+    \EndFor
+    
+    \State $s.color = blue$
+    \State $s.d = 0$
+    
+    \State Initialize $Q = \emptyset$
+    \State \Call{enqueue}{$Q,s$}
+    \While{$ Q != \emptyset$}
+      \State $u = $ \Call{dequeue}{$Q$}
+      \Comment{Remove from the front of queue}
+      \For{each vertex $v \in Adj(u)$}
+        \If{$v.color == white$}
+          \State $v.color = blue$
+          \State \Call{enqueue}{$Q,v$}
+          \Comment{Insert at end of queue}
+          \State $v.pre = u$
+          \State $v.d = u.d + 1$
+        \EndIf
+      \EndFor
+      \State $u.color = red$
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
+
+
+\section{}
+
+Given a directed-acyclic-graph (DAG) $G = (V, E)$, let $n = |V|$ and
+$m = |E|$. Let $s$ and $t$ be two vertices of $G$. There might be
+multiple different paths (not necessarily shortest paths) from $s$ to
+$t$ (e.g., see Fig. 2 for an example). Design an $O(m + n)$ time
+algorithm to compute the number of different paths in $G$ from $s$ to
+$t$. {\bf (20 points) }
+
+
+
+
+\end{document}
