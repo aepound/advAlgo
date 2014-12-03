@@ -30,6 +30,54 @@ removable vertex although there may be multiple such vertices). (Hint: use BFS o
 search.) {\bf (20 points)}
 
 \subsection{My Answer}
+One way to find a node that is removeable is to follow the predecessor
+tree built up by either BFS or DFS until reaching a leaf node.  The
+leaf node will be a node that all of it's adjacent nodes have already
+been enqueued, which means that they are all connected to the graph
+through some other node.  Thus, removing the leaf node is alright. 
+Psuedocode is given below using the BFS as a basis for constructing
+the predecessor tree. This algorithm may pass over some nodes that are
+valid and removeable, but will eventually find a node that is
+definitely removeable.
+
+{\singlespacing
+\begin{algorithmic}
+\Function{BFS-find-removable}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.color  = white$
+      \State $u.pre = NULL$
+    \EndFor
+    
+    \State $s.color = blue$
+    
+    \State Initialize $Q = \emptyset$
+    \State \Call{enqueue}{$Q,s$}
+    \While{$ Q \ne \emptyset$}
+      \State $u = $ \Call{dequeue}{$Q$}
+      \State $isLeaf =$ True
+      \Comment{Remove from the front of queue}
+      \For{each vertex $v \in Adj(u)$}
+        \If{$v.color == white$}
+          \State $v.color = blue$
+          \State \Call{enqueue}{$Q,v$}
+          \Comment{Insert at end of queue}
+          \State $v.pre = u$
+          \State $isLeaf =$ False
+          \Comment{We had to insert a child onto the queue.}
+        \EndIf
+      \EndFor
+      \State $u.color = red$
+      \If{$isLeaf \equiv$ True}
+        \State {\bf return}($u$)
+      \EndIf
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
+
+The algorithmic complexity of this is still the same as BFS, namely
+$O(m+n)$. 
+
 
 
 
@@ -57,6 +105,14 @@ algorithm. {\bf (20 points)}
 
 \subsection{My Answer}
 
+The crux of this algorithm is that now, when we are at a node $v$ and
+considering the path arriving at $v$ from a node $u$, if the path
+through $u$ has the same weight as the path through $v$'s current
+predessor, we now need to take into account the number of legs on each
+path.  If the new path from $u$ to $v$ has fewer legs, then an update
+must occur to set $u$ as the new predessor of $v$.  This is shown
+below in the psuedocode.
+
 {\singlespacing
 \begin{algorithmic}
 \Function{OptimalDijkstra}{$G,s$}
@@ -69,10 +125,10 @@ algorithm. {\bf (20 points)}
     \State $s.legs = 0$
 
     \State Initialize $Q = \emptyset$
-    \While{$ Q != \emptyset$}
+    \While{$ Q \ne \emptyset$}
         \State $u = $ \Call{extract-min}{$Q$}
         \For{each $v \in Adj[u]$}
-          \If{$v.d > u.d + w(u,v)$
+          \If{$v.d > u.d + w(u,v)$}
             \State $v.d = u.d + w(u,v)$
             \State $v.pre = u$
             \State $v.legs = u.legs + 1$
@@ -87,6 +143,10 @@ algorithm. {\bf (20 points)}
 \EndFunction    
 \end{algorithmic}
 }
+
+The extra test for paths of the same length only adds a constant
+amount of time each time it is triggered, and thus the complexity
+stays the same as for the original Dijkstra's algorithm.
 
 
 
@@ -105,8 +165,40 @@ $s$ to $t$. Your algorithm should have the same time complexity as
 Dijkstra's algorithm. {\bf (20 points)}
 
 \subsection{My Answer}
+To keep track of the bottleneck, the criterion for updating the
+vertices is swapped out, and the current bottleneck of the vertex in
+question $v$ is compared to the bottle neck of the path being considered
+from a potential new predessor $u$.  This is seen in the change to the
+condition in the \emph{if}-statement in the psuedocode below.  The
+\emph{max} function is used to compare the bottle neck up to the
+vertex $u$ with the edge weight $w(u,v)$, to get what the bottle neck
+would be for the path arriving from $u$ to $v$.
 
+{\singlespacing
+\begin{algorithmic}
+\Function{OptimalDijkstra}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.b = +\infinity$
+      \Comment{$*.b$ for bottleneck..}
+      \State $u.pre = NULL$
+    \EndFor
+    \State $s.b = 0$
+    \State Initialize $Q = \emptyset$
+    \While{$ Q \ne \emptyset$}
+        \State $u = $ \Call{extract-min}{$Q$}
+        \For{each $v \in Adj[u]$}
+          \If{$v.b > \max\{u.b,\, w(u,v)\}$}
+            \State $v.b = \max\{u.b,\, w(u,v)\}$
+            \State $v.pre = u$
+          \EndIf  
+        \EndFor
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
 
+The complexity of this is the same as Dijkstra's, because we have
+swapped out the relax routine for something slightly different.
 
 
 
