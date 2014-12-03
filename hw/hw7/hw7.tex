@@ -1,0 +1,113 @@
+\documentclass{article}
+\input{../hw4/commonheader}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{algpseudocode}
+\setcounter{MaxMatrixCols}{20}
+\usepackage{algpseudocode}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\title{CS 5050: Homework 6}
+\author{Andrew Pound}
+\date{\today}
+
+
+\begin{document}
+\maketitle
+
+%\begin{enumerate}[label=(\alph*)]
+I worked on this assignment with Chad Cummings.
+\section{}% Problem 1
+ Given a connected undirected graph $G = (V,E)$, let $n = |V |$ and $m
+ = |E|$. We say a vertex $v$ is removable if we remove $v$ and all its
+ incident edges from $G$, the rest of the graph is still connected. See Fig. 1 for an example.
+
+Design an $O(n + m)$ time algorithm to find a removable vertex (you only need to find one
+removable vertex although there may be multiple such vertices). (Hint: use BFS or DFS
+search.) {\bf (20 points)}
+
+\subsection{My Answer}
+
+
+
+\section{}% Problem 2
+
+ Given a directed graph $G = (V,E)$, let $n = |V |$ and $m =
+ |E|$. Every edge $(u,v)$ of $G$ has a nonnegative weight $w(u,v) \le
+ 0$. Let $s$ and $t$ be two vertices in $G$. The length of a path in
+ $G$ is the sum of the weights of all edges in the path. A shortest
+ path from $s$ to $t$ is a path with minimum length among all paths in
+ $G$ from $s$ to $t$. In class, we discussed Dijkstra's algorithm for
+ finding shortest paths. 
+
+Note that there may be multiple different shortest paths from $s$ to
+$t$ in $G$ (i.e., these paths may have different edges but their
+lengths are the same). In some applications, we may want to find a
+shortest path from $s$ to $t$ that has edges as few as possible. A
+path $\pi$ in $G$ from $s$ to $t$ is said to be optimal if (1)$\pi$
+is a shortest path from $s$ to $t$, and (2) among all shortest paths
+from $s$ to $t$, $\pi$ has the minimum number of edges. 
+
+Modify Dijkstra's algorithm to compute an optimal path from $s$ to
+$t$. Your algorithm should have the same time complexity as Dijkstra's
+algorithm. {\bf (20 points)}
+
+\subsection{My Answer}
+
+{\singlespacing
+\begin{algorithmic}
+\Function{OptimalDijkstra}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.d = +\infinity$
+      \State $u.pre = NULL$
+      \State $u.legs = +\infinity$
+    \EndFor
+    \State $s.d = 0$
+    \State $s.legs = 0$
+
+    \State Initialize $Q = \emptyset$
+    \While{$ Q != \emptyset$}
+        \State $u = $ \Call{extract-min}{$Q$}
+        \For{each $v \in Adj[u]$}
+          \If{$v.d > u.d + w(u,v)$
+            \State $v.d = u.d + w(u,v)$
+            \State $v.pre = u$
+            \State $v.legs = u.legs + 1$
+          \ElsIf{$v.d \equiv u.d + w(u,v)$}
+            \If{$u.legs + 1 < v.legs$}
+              \State $v.pre = u$
+              \State $v.legs = u.legs + 1$
+            \EndIf
+          \EndIf  
+        \EndFor
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
+
+
+
+
+\section{} %Problem 3
+
+ Given a directed graph $G = (V,E)$, let $n = |V |$ and $m =
+ |E|$. Every edge $(u,v)$ of $G$ has a non-negative weight $w(u,v) \ge
+ 0$. The bottleneck weight of any path in $G$ is defined to be the
+ largest weight of all edges in the path. Let $s$ and $t$ be two
+ vertices of $G$. A bottleneck shortest path from $s$ to $t$ is a path
+ with minimum bottleneck weight among all paths from $s$ to $t$ in $G$.
+
+Modify Dijkstra's algorithm to compute a bottleneck shortest path from
+$s$ to $t$. Your algorithm should have the same time complexity as
+Dijkstra's algorithm. {\bf (20 points)}
+
+\subsection{My Answer}
+
+
+
+
+
+\end{document}
