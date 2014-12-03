@@ -10,7 +10,7 @@
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 \DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
 
-\title{CS 5050: Homework 5}
+\title{CS 5050: Homework 6}
 \author{Andrew Pound}
 \date{\today}
 
@@ -20,7 +20,7 @@
 
 %\begin{enumerate}[label=(\alph*)]
 I worked on this assignment with Chad Cummings.
-\section{}
+\section{}% Problem 1
 Given an undirected graph $G = (V, E)$, let $n = |V|$, i.e., the total 
 number of vertices of $G$, and $m = |E|$, i.e., the total number of
 edges of $G$. The length of a path in $G$ is the number of edges in
@@ -32,7 +32,32 @@ shortest paths between all pairs of vertices in $G$ (i.e., for every
 pair of vertices $u$ and $v$, compute the length of the shortest path
 from $u$ to $v$). {\bf (20 points) }
 
+\subsection{My Answer}
 
+In order to find the shortest pair-wise distance between any two
+vertices in the graph, we can modify the BFS as we did in class to
+calculate the distance to every vertex from a given source.
+In order to ge all distances, all that is needed is to do the BFS with
+respect to each vertex in the graph.
+
+{\singlespacing
+\begin{algorithmic}
+\Function{allDist}{$G$}
+\State $D \in \mathbb{R}^{n\times n}$
+\For{$i = 1,\dots, n^2$}\Comment{Initialize the Distance Matrix}
+  \State $D(i) = 0$
+\EndFor
+
+\For{each vertex $v \in G$}
+  \State \Call{BFS}{$G,v$}
+  \For{each vertex $u \in G$}
+    \State $D(v,u) = u.d$
+  \EndFor
+\EndFor
+\State {\bf return} $D$
+\EndFunction
+\end{algorithmic}
+}
 
 {\singlespacing
 \begin{algorithmic}
@@ -66,9 +91,14 @@ from $u$ to $v$). {\bf (20 points) }
 \end{algorithmic}
 }
 
+The BFS has complexity $O(m+n)$.  Now because we actually do the BFS
+for each vertex of the graph, we now get a total complexity of
+$O(n(m+n))$. 
 
 
-\section{}
+
+
+\section{}% Problem 2
 Given a graph $G = (V, E)$ (either directed or undirected), let $n = 
 |V|$ and $m = |E|$. In class we gave a depth-first-search (DFS)
 algorithm that is recursive and runs in $O(m + n)$ time.  Usually a
@@ -82,14 +112,65 @@ the graph, i.e., if v is visited by the algorithm through the edge
 $(u, v)$, then $v.pre = u$. As discussed in class, the predecessor
 information essentially maintains the DFS tree. {\bf (20 points) }
 
+\subsection{My Answer}
+In order for the depth first search to work correctly, each vertex
+must be processed \emph{after} all of its children.  Thus, we need to
+not pop the node off the queue.  We use the function {\sc top} to
+specify the operation of retrieving the top of the stack without
+removing it from the queue.  Then the children can be processed and
+pushed onto the stack while leaving the parent node on the stack.
+
+The algorithm psuedocode is given below.
+
+{\singlespacing
+\begin{algorithmic}
+\Function{DFS}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.color  = white$
+      \State $u.d = +\infinity$
+      \State $u.pre = NULL$
+    \EndFor
+    
+    \State Initialize $Q = \emptyset$
+    \For{each vertex $s \in G$}
+    \If{$s.color == white$}
+      
+      \State \Call{push}{$Q,s$}
+      \While{$ Q != \emptyset$}
+        \State $u = $ \Call{top}{$Q$}
+        \Comment{Don't Remove! Just look at top of stack.}
+        \If{$u.color == white$}
+          \State $u.color = blue$
+          \For{each vertex $v \in Adj(u)$}
+            \If{$v.color == white$}
+              \State \Call{push}{$Q,v$}
+                \Comment{Insert at end of queue}
+              \State $v.pre = u$
+              \State $v.d = u.d + 1$
+            \EndIf
+          \EndFor
+        \ElsIf{$u.color == blue$}
+            \State \Call{pop}{$Q$}
+            \State \Call{Evaluate}{$u$}
+            \State $u.color = red$            
+        \Else\Comment{It's red already}
+            \State \Call{pop}{$Q$}
+        
+        \EndIf
+      \EndWhile
+    \EndIf
+    \EndFor
+\EndFunction    
+\end{algorithmic}
+}
+The complexity of this is $O(m+n)$, because each edge is traversed in
+the graph (and each node, too).
 
 
 
 
 
-
-
-\section{}
+\section{} %Problem 3
 Given an undirected graph $G = (V, E)$, let $n = |V|$ and $m
 =|E|$. Suppose $s$ and $t$ are two vertices in $G$. We have already
 known that we can find a shortest path from $s$ to $t$ by using the 
@@ -102,19 +183,27 @@ paths from $s$ to $t$ (your algorithm does not need to list all the
 paths, but only report the number of the paths). (Hint: Modify the BFS 
 algorithm.) {\bf (20 points) }
 
+\subsection{My Answer}
 
+The calculation of the number of paths, only requires modifying the
+BFS so that when we visit a node in the adjacency graph that is blue
+(i.e., it has already been stuck on the queue already) we then
+increase the count of the number of paths if it also qualifies as the
+shortest path.  
 
 {\singlespacing
 \begin{algorithmic}
-\Function{BFS}{$G,s$}
+\Function{BFS}{$G,s,t$}
     \For{each $u \in G$}
       \State $u.color  = white$
       \State $u.d = +\infinity$
       \State $u.pre = NULL$
+      \State $u.nPaths = 0$
     \EndFor
     
     \State $s.color = blue$
     \State $s.d = 0$
+    \State $s.nPaths = 1$
     
     \State Initialize $Q = \emptyset$
     \State \Call{enqueue}{$Q,s$}
@@ -128,16 +217,29 @@ algorithm.) {\bf (20 points) }
           \Comment{Insert at end of queue}
           \State $v.pre = u$
           \State $v.d = u.d + 1$
+          \State $v.nPaths += u.nPaths$
+        \ElsIf{$v.color == blue$}
+          \If{$u.d + 1 == v.d$}\Comment{If this is \emph{also}
+            shortest path....}
+            \State $v.nPaths += u.nPaths$\Comment{Add the number
+              paths going through this edge.}
+          \EndIf
         \EndIf
       \EndFor
       \State $u.color = red$
     \EndWhile
+    \State {\bf return} $t.nPaths$
 \EndFunction    
 \end{algorithmic}
 }
 
+This addition doesn't change the complexity of the BFS algorithm,
+because it only increases by a constant amount of processing on some
+of the edges.  So, the complexity is still $O(m+n)$.
 
-\section{}
+
+
+\section{}%Problem 4
 
 Given a directed-acyclic-graph (DAG) $G = (V, E)$, let $n = |V|$ and
 $m = |E|$. Let $s$ and $t$ be two vertices of $G$. There might be
@@ -145,6 +247,71 @@ multiple different paths (not necessarily shortest paths) from $s$ to
 $t$ (e.g., see Fig. 2 for an example). Design an $O(m + n)$ time
 algorithm to compute the number of different paths in $G$ from $s$ to
 $t$. {\bf (20 points) }
+
+\subsection{My Answer}
+
+So, I redefined the meanings of the colors in the BFS for this
+problem and I added in green.  I define white as not processed, blue
+as already in the queue, green as the adjacency list
+has been added to the queue, and red as all predecessors have been
+fully processed.  In addition, this algorithm assumes that there is a
+predecessor list for each vertex.  If this doesn't exist, then a graph
+with this can be easily formed, by using a BFS, and keeping a
+predecessor list (instead of just a single predecessor).  This will
+only add in $O(m+n)$ complexity to this $O(m+n)$ complexity algorithm,
+thus not changing the overall complexity.
+
+{\singlespacing
+\begin{algorithmic}
+\Function{BFS}{$G,s$}
+    \For{each $u \in G$}
+      \State $u.color  = white$
+      \State $u.npaths = 0$
+    \EndFor
+    \State $s.color = blue$
+    \State $s.npaths = 1$
+    \State Initialize $Q = \emptyset$
+    \State \Call{enqueue}{$Q,s$}
+    \While{$ Q != \emptyset$}
+      \State $u = $ \Call{dequeue}{$Q$}
+      \Comment{Remove $u$ from the front of queue}
+      \For{each vertex $v \in Adj(u)$}
+        \If{$v.color == white$}
+          \State $v.color = blue$
+          \State \Call{enqueue}{$Q,v$}
+          \Comment{Insert $v$ at end of queue}
+        \EndIf
+      \EndFor
+      \State $u.color = green$
+      \For{each vertex $w \in Pre(u)$}
+        \If{$w.color == red$}
+          \State $u.npaths = u.npaths + w.npaths$
+          \State \Call{remove}{$Pre(u),w$} 
+          \Comment{Remove $w$ from the predecessor list}
+        \Else
+          \State \Call{enqueue}{$Q,u$}
+          \Comment{Insert $u$ (again) at end of queue}
+          \State {\bf break}
+        \EndIf
+      \EndFor
+      \If{$Pre(u)$ is empty}
+        \State $u.color = red$
+      \EndIf
+    \EndWhile
+\EndFunction    
+\end{algorithmic}
+}
+
+This algorithm only drops a vertex out of the queue when all of it's
+predecessors have been finsihed.  At that point, the number of paths
+thru the vertex can be calculated. 
+Because of the second for loop over the predecessors, this has a
+higher complexity than the normal BFS, because each edge is visited at
+least twice (but not more than a few extra times -- although this
+depends on the graph).  In the worst case, a single edge may be a
+maximum of $n+1$ times. 
+The complexity is still then $O(m+n)$. 
+
 
 
 
